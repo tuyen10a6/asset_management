@@ -1,0 +1,2836 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Phân tích Hệ thống Quản lý Tài sản - Livespo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .company-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-tabs {
+            border-bottom: 3px solid var(--secondary-color);
+            background: white;
+            border-radius: 10px 10px 0 0;
+            padding: 10px 10px 0 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 15px 25px;
+            margin-right: 5px;
+            border-radius: 10px 10px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: var(--light-bg);
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .nav-tabs .nav-link i {
+            margin-right: 8px;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+        }
+
+        .tab-pane {
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .feature-card {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card h5 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card .icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .usecase-card {
+            background: white;
+            border: 2px solid var(--light-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .usecase-card:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.1);
+        }
+
+        .usecase-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .workflow-diagram {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .mermaid-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            text-align: center;
+            min-height: 300px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .database-table {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        .architecture-layer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .tech-stack {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .tech-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .manual-section {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid var(--success-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .alert-info-custom {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .alert-warning-custom {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .alert-success-custom {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .progress-custom {
+            height: 8px;
+            border-radius: 10px;
+            background: var(--light-bg);
+            margin: 10px 0;
+        }
+
+        .progress-bar-custom {
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--success-color));
+        }
+
+        .footer-section {
+            background: var(--dark-bg);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+        }
+
+        .scroll-to-top:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Mermaid Diagram Styling */
+        .mermaid-container {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            min-height: 200px;
+        }
+
+        .mermaid {
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .workflow-diagram {
+            margin: 30px 0;
+        }
+
+        .workflow-diagram h4 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .tab-pane {
+                padding: 20px;
+            }
+
+            .header-section {
+                padding: 40px 0;
+            }
+
+            .mermaid-container {
+                padding: 15px;
+                overflow-x: scroll;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header Section -->
+<div class="header-section">
+    <div class="container">
+        <div class="header-content">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-qrcode me-3"></i>
+                Hệ thống Quản lý Tài sản
+            </h1>
+            <p class="lead mb-4">Phân tích và Thiết kế Hệ thống QR Code Asset Management</p>
+            <div class="company-info">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4><i class="fas fa-building me-2"></i>Livespo Vietnam Co., Ltd</h4>
+                        <p class="mb-0">Giải pháp quản lý tài sản thông minh cho doanh nghiệp</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-end">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            <span id="currentDate"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Content -->
+<div class="container my-5">
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs" id="systemTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-target="#requirements" data-bs-toggle="tab" id="requirements-tab"
+                    role="tab" type="button">
+                <i class="fas fa-list-check"></i>Phân tích yêu cầu
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-target="#usecases" data-bs-toggle="tab" id="usecases-tab" role="tab"
+                    type="button">
+                <i class="fas fa-users"></i>Use Cases
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-target="#workflow" data-bs-toggle="tab" id="workflow-tab" role="tab"
+                    type="button">
+                <i class="fas fa-project-diagram"></i>Luồng hoạt động
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-target="#database" data-bs-toggle="tab" id="database-tab" role="tab"
+                    type="button">
+                <i class="fas fa-database"></i>Cơ sở dữ liệu
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-target="#infrastructure" data-bs-toggle="tab" id="infrastructure-tab"
+                    role="tab" type="button">
+                <i class="fas fa-server"></i>Hạ tầng
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-target="#manual" data-bs-toggle="tab" id="manual-tab" role="tab"
+                    type="button">
+                <i class="fas fa-book"></i>Hướng dẫn
+            </button>
+        </li>
+    </ul>
+    <!-- Tab Content -->
+    <div class="tab-content" id="systemTabsContent">
+        <!-- Requirements Tab -->
+        <div class="tab-pane fade" id="requirements" role="tabpanel">
+            <h2 class="section-title">
+                <i class="fas fa-list-check me-2"></i>
+                Phân tích Yêu cầu và Chức năng Hệ thống
+            </h2>
+            <div class="alert alert-info-custom">
+                <h5><i class="fas fa-bullseye me-2"></i>Mục tiêu hệ thống</h5>
+                <ul class="mb-0">
+                    <li>Quản lý tài sản công ty thông qua QR code</li>
+                    <li>Theo dõi thông tin nhân viên sử dụng tài sản</li>
+                    <li>Tự động hóa quy trình cấp phát và thu hồi tài sản</li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h5>Chức năng dành cho HCNS (Admin)</h5>
+                        <ul>
+                            <li><strong>Quản lý tài sản:</strong> Thêm/sửa/xóa thông tin tài sản, tạo QR code</li>
+                            <li><strong>Quản lý nhân viên:</strong> Thêm/sửa/xóa thông tin nhân viên và bộ phận</li>
+                            <li><strong>Cấp phát tài sản:</strong> Gán tài sản cho nhân viên với thời hạn</li>
+                            <li><strong>Báo cáo thống kê:</strong> Danh sách tài sản, báo cáo sắp hết hạn</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5>Chức năng dành cho Nhân viên</h5>
+                        <ul>
+                            <li><strong>Quét QR code:</strong> Xem thông tin tài sản được cấp</li>
+                            <li><strong>Xem lịch sử:</strong> Lịch sử sử dụng tài sản</li>
+                            <li><strong>Báo cáo sự cố:</strong> Báo hỏng/mất tài sản, yêu cầu bảo trì</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h5>Chức năng Hệ thống</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-shield-alt me-2"></i>Xác thực &amp; Phân quyền</h6>
+                        <ul>
+                            <li>Đăng nhập/đăng xuất</li>
+                            <li>Phân quyền theo vai trò</li>
+                            <li>Bảo mật dữ liệu</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-qrcode me-2"></i>Quản lý QR Code</h6>
+                        <ul>
+                            <li>Tạo QR code unique</li>
+                            <li>Redirect đến thông tin tài sản</li>
+                            <li>Format: https://qlts.livespo.vn/ts0001</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-bell me-2"></i>Thông báo tự động</h6>
+                        <ul>
+                            <li>Cảnh báo tài sản sắp hết hạn</li>
+                            <li>Thông báo sự cố</li>
+                            <li>Email báo cáo định kỳ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Use Cases Tab -->
+        <div class="tab-pane fade" id="usecases" role="tabpanel">
+            <h2 class="section-title">
+                <i class="fas fa-users me-2"></i>
+                Thiết kế Use Cases và User Stories
+            </h2>
+            <div class="usecase-card">
+                <div class="usecase-header">
+                    <h4><i class="fas fa-plus-circle me-2"></i>Use Case 1: Cấp phát tài sản mới</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Actor:</strong> HCNS<br/>
+                        <strong>Mục đích:</strong> Cấp phát tài sản cho nhân viên mới
+                    </div>
+                    <div class="col-md-9">
+                        <strong>Luồng chính:</strong>
+                        <ol>
+                            <li>HCNS đăng nhập hệ thống</li>
+                            <li>Chọn "Cấp phát tài sản mới"</li>
+                            <li>Nhập thông tin tài sản (loại thiết bị, serial number, etc.)</li>
+                            <li>Chọn nhân viên được cấp</li>
+                            <li>Thiết lập ngày bắt đầu/kết thúc sử dụng</li>
+                            <li>Hệ thống tạo QR code với format: https://qlts.livespo.vn/ts0001</li>
+                            <li>In QR code và dán lên tài sản</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-header">
+                    <h4><i class="fas fa-camera me-2"></i>Use Case 2: Quét QR code xem thông tin</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Actor:</strong> Nhân viên/HCNS<br/>
+                        <strong>Mục đích:</strong> Xem thông tin tài sản
+                    </div>
+                    <div class="col-md-9">
+                        <strong>Luồng chính:</strong>
+                        <ol>
+                            <li>Sử dụng điện thoại quét QR code</li>
+                            <li>Truy cập link https://qlts.livespo.vn/ts0001</li>
+                            <li>Hệ thống hiển thị thông tin:
+                                <ul>
+                                    <li>Mã nhân viên</li>
+                                    <li>Tên nhân viên</li>
+                                    <li>Bộ phận</li>
+                                    <li>Loại thiết bị</li>
+                                    <li>Ngày bắt đầu sử dụng</li>
+                                    <li>Ngày kết thúc sử dụng</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-header">
+                    <h4><i class="fas fa-undo me-2"></i>Use Case 3: Thu hồi tài sản</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Actor:</strong> HCNS<br/>
+                        <strong>Mục đích:</strong> Thu hồi tài sản khi nhân viên nghỉ việc
+                    </div>
+                    <div class="col-md-9">
+                        <strong>Luồng chính:</strong>
+                        <ol>
+                            <li>HCNS tìm kiếm tài sản cần thu hồi</li>
+                            <li>Cập nhật trạng thái "Thu hồi"</li>
+                            <li>Ghi chú lý do thu hồi</li>
+                            <li>Hệ thống cập nhật ngày kết thúc sử dụng</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-header">
+                    <h4><i class="fas fa-bell me-2"></i>Use Case 4: Báo cáo tài sản sắp hết hạn</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Actor:</strong> Hệ thống<br/>
+                        <strong>Mục đích:</strong> Thông báo tự động tài sản sắp hết hạn
+                    </div>
+                    <div class="col-md-9">
+                        <strong>Luồng chính:</strong>
+                        <ol>
+                            <li>Hệ thống kiểm tra định kỳ (hàng ngày)</li>
+                            <li>Tìm tài sản có ngày kết thúc &lt; 30 ngày</li>
+                            <li>Gửi email thông báo cho HCNS</li>
+                            <li>Hiển thị danh sách trên dashboard</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Workflow Tab -->
+        <div class="tab-pane fade show active" id="workflow" role="tabpanel">
+            <h2 class="section-title">
+                <i class="fas fa-project-diagram me-2"></i>
+                Sơ đồ Luồng Hoạt động
+            </h2>
+            <!-- Luồng 1: Cấp phát tài sản chi tiết -->
+            <div class="workflow-diagram">
+                <h4><i class="fas fa-plus-circle me-2"></i>1. Luồng Cấp phát Tài sản Mới (Chi tiết)</h4>
+                <div class="mermaid-container">
+                    <div class="mermaid" id="workflow1">
+                        flowchart TD
+                        Start(["🚀 Bắt đầu quy trình"]) --&gt; A["👤 Nhân viên mới vào công ty<br>hoặc cần cấp thêm tài
+                        sản"]
+                        A --&gt; B["🔐 HCNS đăng nhập hệ thống<br>Username + Password"]
+                        B --&gt; C{"🔍 Kiểm tra quyền truy cập"}
+                        C --&gt;|❌ Không có quyền| C1["🚫 Từ chối truy cập<br>Liên hệ Admin"]
+                        C --&gt;|✅ Có quyền| D["📋 Vào Dashboard<br>Xem tổng quan hệ thống"]
+
+                        D --&gt; E["➕ Chọn menu Tài sản<br/>→ Cấp phát mới"]
+                        E --&gt; F["📝 Form cấp phát tài sản<br/>hiển thị"]
+
+                        F --&gt; G["🔍 Tìm kiếm tài sản<br/>theo loại/tên/mã"]
+                        G --&gt; H{"📦 Tài sản có sẵn?"}
+                        H --&gt;|❌ Không| H1["➕ Thêm tài sản mới<br/>→ Tạo mã TS0001"]
+                        H1 --&gt; H2["🔢 Tạo QR code tự động<br/>Link: qlts.livespo.vn/ts0001"]
+                        H2 --&gt; I
+                        H --&gt;|✅ Có| I["👥 Chọn nhân viên nhận<br/>Tìm theo tên/mã NV"]
+
+                        I --&gt; J{"👤 Nhân viên hợp lệ?"}
+                        J --&gt;|❌ Không tồn tại| J1["➕ Thêm nhân viên mới<br/>Điền thông tin cơ bản"]
+                        J1 --&gt; K
+                        J --&gt;|✅ Hợp lệ| K["📅 Thiết lập thời gian<br/>Ngày bắt đầu - Ngày kết thúc"]
+
+                        K --&gt; L["📝 Nhập ghi chú<br/>Lý do cấp phát, điều kiện"]
+                        L --&gt; M["👁️ Xem lại thông tin<br/>Tài sản + Nhân viên + Thời gian"]
+                        M --&gt; N{"✅ Xác nhận cấp phát?"}
+                        N --&gt;|❌ Hủy| End1(["❌ Hủy quy trình"])
+                        N --&gt;|✅ Xác nhận| O["💾 Lưu vào database<br/>Cập nhật trạng thái tài sản"]
+
+                        O --&gt; P["🖨️ Tạo biên bản bàn giao<br/>PDF với thông tin đầy đủ"]
+                        P --&gt; Q["🖨️ In QR code<br/>Giấy dán chống nước 3x3cm"]
+                        Q --&gt; R["📋 Dán QR code lên tài sản<br/>Vị trí dễ nhìn, không che khuất"]
+
+                        R --&gt; S["🤝 Bàn giao tài sản<br/>Nhân viên ký biên bản"]
+                        S --&gt; T["📧 Gửi email thông báo<br/>Cho nhân viên + Quản lý"]
+                        T --&gt; U["📊 Cập nhật báo cáo<br/>Dashboard + Statistics"]
+                        U --&gt; End2(["✅ Hoàn thành cấp phát"])
+
+                        classDef startClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+                        classDef endClass fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+                        classDef errorClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+                        classDef processClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+                        classDef importantClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+                        class Start startClass
+                        class End2 endClass
+                        class End1,C1 errorClass
+                        class O,H2 importantClass
+                        </br></br></br></br></div>
+                </div>
+            </div>
+            <!-- Luồng 2: Quét QR Code chi tiết -->
+            <div class="workflow-diagram">
+                <h4><i class="fas fa-camera me-2"></i>2. Luồng Quét QR Code và Xem thông tin (Chi tiết)</h4>
+                <div class="mermaid-container">
+                    <div class="mermaid" id="workflow2">
+                        flowchart TD
+                        Start(["📱 Người dùng cần xem thông tin tài sản"]) --&gt; A["📷 Mở Camera hoặc QR Scanner<br/>iPhone/Android"]
+                        A --&gt; B["🎯 Hướng camera vào QR code<br/>Khoảng cách 15-20cm"]
+                        B --&gt; C{"📸 QR code được nhận diện?"}
+                        C --&gt;|❌ Không| C1["⚠️ Kiểm tra lại<br/>Ánh sáng, khoảng cách, độ rõ"]
+                        C1 --&gt; C2{"🔄 Thử lại?"}
+                        C2 --&gt;|✅ Có| B
+                        C2 --&gt;|❌ Không| C3["📞 Liên hệ HCNS<br/>Báo QR code lỗi"]
+
+                        C --&gt;|✅ Có| D["🌐 Truy cập link<br/>https://qlts.livespo.vn/ts0001"]
+                        D --&gt; E["⏳ Loading trang web<br/>Kết nối server"]
+                        E --&gt; F{"🌐 Kết nối thành công?"}
+                        F --&gt;|❌ Lỗi mạng| F1["📶 Kiểm tra internet<br/>Thử lại sau"]
+                        F --&gt;|✅ Thành công| G["🔍 Server xử lý request<br/>Parse mã tài sản từ URL"]
+
+                        G --&gt; H["🗄️ Truy vấn database<br/>SELECT * FROM assets WHERE asset_code = TS0001"]
+                        H --&gt; I{"💾 Tìm thấy dữ liệu?"}
+                        I --&gt;|❌ Không| I1["❌ Hiển thị lỗi<br/>QR code không hợp lệ hoặc đã bị xóa"]
+                        I1 --&gt; I2["📞 Hiển thị thông tin liên hệ<br/>HCNS để hỗ trợ"]
+
+                        I --&gt;|✅ Có| J["🔄 Lấy thông tin liên quan<br/>JOIN với bảng employees, departments"]
+                        J --&gt; K["📋 Tạo trang thông tin<br/>HTML responsive"]
+
+                        K --&gt; L["📱 Hiển thị thông tin tài sản"]
+                        L --&gt; M["🆔 Mã tài sản: TS0001"]
+                        L --&gt; N["📝 Tên tài sản: Laptop Dell Inspiron"]
+                        L --&gt; O["👤 Nhân viên: Nguyễn Văn A - NV001"]
+                        L --&gt; P["🏢 Bộ phận: IT Department"]
+                        L --&gt; Q["💻 Loại thiết bị: Laptop"]
+                        L --&gt; R["🏭 Thương hiệu: Dell - Model: Inspiron 15"]
+                        L --&gt; S["📅 Ngày bắt đầu: 01/01/2024"]
+                        L --&gt; T["📅 Ngày kết thúc: 01/01/2027"]
+                        L --&gt; U["📊 Trạng thái: Đang sử dụng"]
+                        L --&gt; V["📍 Vị trí: Tầng 3 - Phòng IT"]
+
+                        V --&gt; W["🔧 Hiển thị các tùy chọn"]
+                        W --&gt; X["📝 Báo cáo sự cố"]
+                        W --&gt; Y["📞 Liên hệ hỗ trợ"]
+                        W --&gt; Z["📊 Lịch sử sử dụng"]
+
+                        Z --&gt; End(["✅ Hoàn thành xem thông tin"])
+                        X --&gt; X1["📝 Form báo cáo sự cố<br/>Loại sự cố + Mô tả + Ảnh"]
+                        Y --&gt; Y1["📞 Thông tin liên hệ<br/>HCNS + IT Support"]
+
+                        classDef startClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+                        classDef endClass fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+                        classDef errorClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+                        classDef processClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+                        classDef importantClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+                        class Start startClass
+                        class End endClass
+                        class I1,C1,C3,F1 errorClass
+                        class K,J importantClass
+                    </div>
+                </div>
+            </div>
+            <!-- Luồng 3: Thu hồi tài sản chi tiết -->
+            <div class="workflow-diagram">
+                <h4><i class="fas fa-undo me-2"></i>3. Luồng Thu hồi Tài sản (Chi tiết)</h4>
+                <div class="mermaid-container">
+                    <div class="mermaid" id="workflow3">
+                        flowchart TD
+                        Start(["🚀 Khởi tạo thu hồi tài sản"]) --&gt; A["👋 Trigger thu hồi:<br/>Nghỉ việc/Chuyển
+                        BP/Hỏng/Nâng cấp"]
+                        A --&gt; B["🔐 HCNS đăng nhập hệ thống<br/>Xác thực quyền admin"]
+                        B --&gt; C["📋 Vào menu Cấp phát<br/>→ Danh sách cấp phát"]
+
+                        C --&gt; D["🔍 Tìm kiếm tài sản cần thu hồi<br/>Theo NV/Mã tài sản/Bộ phận"]
+                        D --&gt; E{"📦 Tìm thấy tài sản?"}
+                        E --&gt;|❌ Không| E1["⚠️ Kiểm tra lại từ khóa<br/>Hoặc tài sản đã được thu hồi"]
+                        E1 --&gt; E2{"🔄 Tìm kiếm lại?"}
+                        E2 --&gt;|✅ Có| D
+                        E2 --&gt;|❌ Không| End1(["❌ Kết thúc - Không tìm thấy"])
+
+                        E --&gt;|✅ Có| F["📋 Hiển thị thông tin tài sản<br/>Trạng thái: Đang sử dụng"]
+                        F --&gt; G["🔄 Nhấn nút Thu hồi<br/>Mở form thu hồi"]
+
+                        G --&gt; H["📅 Nhập ngày thu hồi<br/>Mặc định: Hôm nay"]
+                        H --&gt; I["📝 Chọn lý do thu hồi:<br/>Nghỉ việc/Chuyển BP/Hỏng/Nâng cấp/Khác"]
+                        I --&gt; J["🔍 Đánh giá tình trạng tài sản:<br/>Tốt/Khá/Kém/Hỏng"]
+                        J --&gt; K["📝 Nhập ghi chú chi tiết<br/>Mô tả tình trạng, vấn đề nếu có"]
+
+                        K --&gt; L["👁️ Xem lại thông tin thu hồi<br/>Tài sản + Lý do + Tình trạng"]
+                        L --&gt; M{"✅ Xác nhận thu hồi?"}
+                        M --&gt;|❌ Hủy| End2(["❌ Hủy thu hồi"])
+                        M --&gt;|✅ Xác nhận| N["💾 Cập nhật database<br/>Trạng thái: Đã thu hồi"]
+
+                        N --&gt; O["📊 Cập nhật bảng asset_assignments<br/>actual_return_date, return_condition"]
+                        O --&gt; P["📝 Tạo bản ghi lịch sử<br/>asset_history: action_type = returned"]
+                        P --&gt; Q["🖨️ Tạo biên bản thu hồi<br/>PDF với thông tin đầy đủ"]
+
+                        Q --&gt; R["🤝 Nhân viên ký xác nhận<br/>Biên bản thu hồi"]
+                        R --&gt; S{"🔍 Tình trạng tài sản?"}
+                        S --&gt;|Tốt/Khá| S1["✅ Cập nhật trạng thái: Available<br/>Sẵn sàng cấp phát lại"]
+                        S --&gt;|Kém/Hỏng| S2["🔧 Cập nhật trạng thái: Maintenance<br/>Cần sửa chữa/thanh lý"]
+
+                        S1 --&gt; T["📧 Gửi email thông báo<br/>Nhân viên + Quản lý + IT"]
+                        S2 --&gt; T
+                        T --&gt; U["📊 Cập nhật dashboard<br/>Statistics + Reports"]
+                        U --&gt; V{"🔄 Cần cấp phát tài sản thay thế?"}
+                        V --&gt;|✅ Có| V1["🔄 Chuyển sang quy trình cấp phát<br/>Tài sản thay thế"]
+                        V --&gt;|❌ Không| End3(["✅ Hoàn thành thu hồi"])
+
+                        classDef startClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+                        classDef endClass fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+                        classDef errorClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+                        classDef processClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+                        classDef importantClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+                        class Start startClass
+                        class End3 endClass
+                        class End1,End2,E1 errorClass
+                        class N,S1 importantClass
+                        class S2 processClass
+                    </div>
+                </div>
+            </div>
+            <!-- Luồng 4: Báo cáo sự cố chi tiết -->
+            <div class="workflow-diagram">
+                <h4><i class="fas fa-exclamation-triangle me-2"></i>4. Luồng Báo cáo Sự cố (Chi tiết)</h4>
+                <div class="mermaid-container">
+                    <div class="mermaid" id="workflow4">
+                        flowchart TD
+                        Start(["⚠️ Phát hiện sự cố tài sản"]) --&gt; A["👤 Nhân viên phát hiện sự cố<br/>Hỏng/Mất/Cần bảo
+                        trì"]
+                        A --&gt; B["📱 Truy cập trang báo cáo<br/>qlts.livespo.vn/report"]
+                        B --&gt; C["📷 Quét QR code tài sản<br/>Hoặc nhập mã tài sản thủ công"]
+
+                        C --&gt; D{"🔍 Tài sản hợp lệ?"}
+                        D --&gt;|❌ Không| D1["❌ Hiển thị lỗi<br/>Không tìm thấy tài sản"]
+                        D1 --&gt; D2["📞 Liên hệ HCNS<br/>Để được hỗ trợ"]
+
+                        D --&gt;|✅ Có| E["📋 Hiển thị form báo cáo<br/>Thông tin tài sản + Nhân viên"]
+                        E --&gt; F["📝 Chọn loại sự cố:<br/>Hỏng hóc/Mất mát/Cần bảo trì/Khác"]
+                        F --&gt; G["📅 Chọn thời gian xảy ra<br/>Ngày + Giờ ước tính"]
+                        G --&gt; H["📝 Mô tả chi tiết sự cố<br/>Triệu chứng, nguyên nhân, tác động"]
+
+                        H --&gt; I["📸 Chụp ảnh minh họa<br/>Upload hình ảnh tùy chọn"]
+                        I --&gt; J["📞 Nhập thông tin liên hệ<br/>Email, SĐT để phản hồi"]
+                        J --&gt; K["🔄 Đánh giá mức độ ưu tiên<br/>Thấp/Trung bình/Cao/Khẩn cấp"]
+
+                        K --&gt; L["👁️ Xem lại thông tin báo cáo<br/>Tài sản + Sự cố + Liên hệ"]
+                        L --&gt; M{"✅ Gửi báo cáo?"}
+                        M --&gt;|❌ Hủy| End1(["❌ Hủy báo cáo"])
+                        M --&gt;|✅ Gửi| N["💾 Lưu vào database<br/>Bảng incident_reports"]
+
+                        N --&gt; O["🔢 Tạo mã số báo cáo<br/>INC001, INC002..."]
+                        O --&gt; P["📧 Gửi email tự động<br/>Cho HCNS + IT Support"]
+                        P --&gt; Q["📱 Gửi SMS/Push notification<br/>Thông báo khẩn cấp nếu mức độ cao"]
+
+                        Q --&gt; R["📊 Cập nhật dashboard<br/>Số lượng sự cố chưa xử lý"]
+                        R --&gt; S["✅ Hiển thị mã số báo cáo<br/>Cho người dùng theo dõi"]
+
+                        S --&gt; T["🔄 HCNS xử lý báo cáo"]
+                        T --&gt; U["👁️ Xem chi tiết sự cố<br/>Phân loại và ưu tiên"]
+                        U --&gt; V{"🔧 Loại xử lý?"}
+                        V --&gt;|🔧 Sửa chữa| V1["🛠️ Liên hệ bảo trì<br/>Lên lịch sửa chữa"]
+                        V --&gt;|🔄 Thay thế| V2["📦 Cấp phát tài sản thay thế<br/>Thu hồi tài sản hỏng"]
+                        V --&gt;|📋 Điều tra| V3["🔍 Thu thập thêm thông tin<br/>Liên hệ người báo cáo"]
+
+                        V1 --&gt; W["📝 Cập nhật trạng thái<br/>Đang xử lý → Đã giải quyết"]
+                        V2 --&gt; W
+                        V3 --&gt; W
+                        W --&gt; X["📧 Thông báo kết quả<br/>Cho người báo cáo"]
+                        X --&gt; End2(["✅ Hoàn thành xử lý sự cố"])
+
+                        classDef startClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+                        classDef endClass fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+                        classDef errorClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+                        classDef processClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+                        classDef importantClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+                        classDef actionClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+
+                        class Start startClass
+                        class End2 endClass
+                        class End1,D1 errorClass
+                        class N,P importantClass
+                        class V1,V2,V3 actionClass
+                    </div>
+                </div>
+            </div>
+            <!-- Luồng 5: Kiến trúc hệ thống chi tiết -->
+            <div class="workflow-diagram">
+                <h4><i class="fas fa-server me-2"></i>5. Kiến trúc Hệ thống và Data Flow (Chi tiết)</h4>
+                <div class="mermaid-container">
+                    <div class="mermaid" id="architecture">flowchart TB
+                        %% Kiến trúc Hệ thống và Data Flow
+                        subgraph Client["🖥️ Client Layer"]
+                        A1["💻 Admin Web App (React + MUI)"]
+                        A2["📱 Mobile Web App (PWA)"]
+                        A3["📷 QR Scanner (HTML5 Camera API)"]
+                        end
+
+                        subgraph Edge["🌐 Edge &amp; Web Server"]
+                        B1["Nginx (+ SSL)"]
+                        end
+
+                        subgraph App["⚙️ Application Layer"]
+                        C1["API Gateway (Laravel/Express)"]
+                        C2["Auth Service (JWT/Session)"]
+                        C3["Rate Limiter &amp; CORS"]
+                        end
+
+                        subgraph Domain["🧠 Business Services"]
+                        D1["Asset Service (CRUD Tài sản)"]
+                        D2["Employee Service (Nhân sự)"]
+                        D3["Assignment Service (Cấp phát/Thu hồi)"]
+                        D4["Incident Service (Sự cố/Bảo trì)"]
+                        D5["QR Service (Sinh/Tra cứu QR)"]
+                        D6["Report Service (Dashboard/Export)"]
+                        end
+
+                        subgraph Data["🗄️ Data &amp; Messaging"]
+                        E1["MySQL (RDS)"]
+                        E2["Redis (Cache/Queue)"]
+                        E3["S3/MinIO (Tệp đính kèm)"]
+                        E4["Message Queue (RabbitMQ)"]
+                        end
+
+                        subgraph Observ["📈 Observability"]
+                        F1["Log (ELK)"]
+                        F2["Metrics (Prometheus/Grafana)"]
+                        F3["Tracing (OpenTelemetry)"]
+                        end
+
+                        %% Luồng chính
+                        A1 --&gt;|HTTPS| B1 --&gt; C1
+                        A2 --&gt;|HTTPS| B1
+                        A3 --&gt;|HTTPS| B1
+
+                        C1 --&gt; C2
+                        C1 --&gt; C3
+                        C1 --&gt; D1
+                        C1 --&gt; D2
+                        C1 --&gt; D3
+                        C1 --&gt; D4
+                        C1 --&gt; D5
+                        C1 --&gt; D6
+
+                        D1 --&gt;|SQL| E1
+                        D2 --&gt;|SQL| E1
+                        D3 --&gt;|SQL| E1
+                        D4 --&gt;|SQL| E1
+                        D5 --&gt;|SQL| E1
+                        D6 --&gt;|SQL| E1
+
+                        C1 --&gt;|Cache| E2
+                        D4 --&gt;|Queue job| E4
+                        D6 --&gt;|Export file| E3
+
+                        C1 --&gt; F1
+                        C1 --&gt; F2
+                        C1 --&gt; F3
+                    </div>
+                </div>
+            </div>
+            <!-- Luồng 6: Database Schema và Relationships -->
+            <div class="workflow-diagram">
+                <h4><i class="fas fa-database me-2"></i>6. Database Schema và Relationships (Chi tiết)</h4>
+                <div class="mermaid-container">
+                    <div class="mermaid" id="database-schema">erDiagram
+                        %% Database Schema và Relationships
+                        DEPARTMENTS {
+                        int id PK
+                        string code UK
+                        string name
+                        text description
+                        int manager_id FK
+                        timestamp created_at
+                        timestamp updated_at
+                        boolean is_active
+                        }
+
+                        EMPLOYEES {
+                        int id PK
+                        string employee_code UK
+                        string full_name
+                        string email UK
+                        string phone
+                        int department_id FK
+                        string position
+                        date hire_date
+                        enum status
+                        timestamp created_at
+                        timestamp updated_at
+                        }
+
+                        USERS {
+                        int id PK
+                        string username UK
+                        string email UK
+                        string password_hash
+                        enum role
+                        int employee_id FK
+                        boolean is_active
+                        timestamp created_at
+                        timestamp updated_at
+                        }
+
+                        ASSET_CATEGORIES {
+                        int id PK
+                        string code UK
+                        string name
+                        text description
+                        int depreciation_years
+                        boolean is_active
+                        timestamp created_at
+                        timestamp updated_at
+                        }
+
+                        ASSETS {
+                        int id PK
+                        string asset_code UK
+                        string asset_name
+                        int category_id FK
+                        string brand
+                        string model
+                        string serial_number
+                        date purchase_date
+                        decimal purchase_price
+                        date warranty_expiry
+                        enum condition_status
+                        string location
+                        enum status
+                        timestamp created_at
+                        timestamp updated_at
+                        }
+
+                        ASSET_ASSIGNMENTS {
+                        int id PK
+                        int asset_id FK
+                        int employee_id FK
+                        date start_date
+                        date end_date
+                        text note
+                        enum status
+                        timestamp created_at
+                        timestamp updated_at
+                        }
+
+                        INCIDENT_REPORTS {
+                        int id PK
+                        string incident_code UK
+                        int asset_id FK
+                        int reporter_employee_id FK
+                        enum severity
+                        enum incident_type
+                        text description
+                        timestamp reported_at
+                        enum status
+                        timestamp created_at
+                        timestamp updated_at
+                        }
+
+                        %% Relationships
+                        DEPARTMENTS ||--o{ EMPLOYEES : "thuộc về"
+                        EMPLOYEES ||--o{ USERS : "có tài khoản"
+                        EMPLOYEES ||--o{ ASSET_ASSIGNMENTS : "được cấp phát"
+                        ASSET_CATEGORIES ||--o{ ASSETS : "phân loại"
+                        ASSETS ||--o{ ASSET_ASSIGNMENTS : "được cấp phát"
+                        ASSETS ||--o{ INCIDENT_REPORTS : "liên quan"
+                        EMPLOYEES ||--o{ INCIDENT_REPORTS : "báo cáo"
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info-custom mt-4">
+                <h5><i class="fas fa-lightbulb me-2"></i>Giải thích Luồng hoạt động</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>🔄 Quy trình chính:</h6>
+                        <ul>
+                            <li><strong>Cấp phát:</strong> HCNS tạo tài sản → Tạo QR → Gán cho nhân viên</li>
+                            <li><strong>Sử dụng:</strong> Nhân viên quét QR → Xem thông tin → Báo cáo sự cố</li>
+                            <li><strong>Thu hồi:</strong> HCNS thu hồi → Cập nhật trạng thái → Thông báo</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>🏗️ Kiến trúc hệ thống:</h6>
+                        <ul>
+                            <li><strong>Client:</strong> Web/Mobile interface</li>
+                            <li><strong>Application:</strong> API Gateway + Services</li>
+                            <li><strong>Business:</strong> Core business logic</li>
+                            <li><strong>Data:</strong> Database + File storage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Database Tab -->
+        <div class="tab-pane fade" id="database" role="tabpanel">
+            <h2 class="section-title">
+                <i class="fas fa-database me-2"></i>
+                Thiết kế Cơ sở Dữ liệu
+            </h2>
+            <div class="alert alert-info-custom">
+                <h5><i class="fas fa-info-circle me-2"></i>Tổng quan Database</h5>
+                <p class="mb-0">Hệ thống sử dụng MySQL với 10 bảng chính, được thiết kế để hỗ trợ đầy đủ các chức năng
+                    quản lý tài sản, từ cấp phát đến thu hồi và báo cáo.</p>
+            </div>
+            <!-- Bảng 1: Departments -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-building me-2"></i>1. departments - Quản lý Bộ phận
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của bộ phận</td>
+                            </tr>
+                            <tr>
+                                <td><strong>code</strong></td>
+                                <td>VARCHAR(10)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Mã bộ phận (VD: IT, HR, ACC)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>name</strong></td>
+                                <td>VARCHAR(100)</td>
+                                <td>NOT NULL</td>
+                                <td>Tên đầy đủ của bộ phận</td>
+                            </tr>
+                            <tr>
+                                <td><strong>description</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Mô tả chi tiết về bộ phận</td>
+                            </tr>
+                            <tr>
+                                <td><strong>manager_id</strong></td>
+                                <td>INT</td>
+                                <td>NULL</td>
+                                <td>ID trưởng bộ phận</td>
+                            </tr>
+                            <tr>
+                                <td><strong>created_at</strong></td>
+                                <td>TIMESTAMP</td>
+                                <td>DEFAULT CURRENT_TIMESTAMP</td>
+                                <td>Thời gian tạo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>updated_at</strong></td>
+                                <td>TIMESTAMP</td>
+                                <td>ON UPDATE CURRENT_TIMESTAMP</td>
+                                <td>Thời gian cập nhật</td>
+                            </tr>
+                            <tr>
+                                <td><strong>is_active</strong></td>
+                                <td>BOOLEAN</td>
+                                <td>DEFAULT TRUE</td>
+                                <td>Trạng thái hoạt động</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 2: Employees -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-users me-2"></i>2. employees - Quản lý Nhân viên
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của nhân viên</td>
+                            </tr>
+                            <tr>
+                                <td><strong>employee_code</strong></td>
+                                <td>VARCHAR(20)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Mã nhân viên (VD: NV001)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>full_name</strong></td>
+                                <td>VARCHAR(100)</td>
+                                <td>NOT NULL</td>
+                                <td>Họ tên đầy đủ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>email</strong></td>
+                                <td>VARCHAR(100)</td>
+                                <td>UNIQUE</td>
+                                <td>Email công ty</td>
+                            </tr>
+                            <tr>
+                                <td><strong>phone</strong></td>
+                                <td>VARCHAR(15)</td>
+                                <td>NULL</td>
+                                <td>Số điện thoại</td>
+                            </tr>
+                            <tr>
+                                <td><strong>department_id</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID bộ phận (tham chiếu departments.id)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>position</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>NULL</td>
+                                <td>Chức vụ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>hire_date</strong></td>
+                                <td>DATE</td>
+                                <td>NULL</td>
+                                <td>Ngày vào làm</td>
+                            </tr>
+                            <tr>
+                                <td><strong>status</strong></td>
+                                <td>ENUM</td>
+                                <td>'active', 'inactive', 'terminated'</td>
+                                <td>Trạng thái làm việc</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 3: Asset Categories -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-tags me-2"></i>3. asset_categories - Loại Tài sản
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của loại tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>code</strong></td>
+                                <td>VARCHAR(10)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Mã loại tài sản (VD: LAPTOP, MOUSE)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>name</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>NOT NULL</td>
+                                <td>Tên loại tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>description</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Mô tả loại tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>depreciation_years</strong></td>
+                                <td>INT</td>
+                                <td>DEFAULT 3</td>
+                                <td>Số năm khấu hao</td>
+                            </tr>
+                            <tr>
+                                <td><strong>is_active</strong></td>
+                                <td>BOOLEAN</td>
+                                <td>DEFAULT TRUE</td>
+                                <td>Trạng thái hoạt động</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 4: Assets -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-laptop me-2"></i>4. assets - Tài sản
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>asset_code</strong></td>
+                                <td>VARCHAR(20)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Mã tài sản (VD: TS0001)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>qr_code</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Mã QR code</td>
+                            </tr>
+                            <tr>
+                                <td><strong>asset_name</strong></td>
+                                <td>VARCHAR(100)</td>
+                                <td>NOT NULL</td>
+                                <td>Tên tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>category_id</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID loại tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>brand</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>NULL</td>
+                                <td>Thương hiệu</td>
+                            </tr>
+                            <tr>
+                                <td><strong>model</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>NULL</td>
+                                <td>Model/Phiên bản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>serial_number</strong></td>
+                                <td>VARCHAR(100)</td>
+                                <td>NULL</td>
+                                <td>Số serial</td>
+                            </tr>
+                            <tr>
+                                <td><strong>purchase_date</strong></td>
+                                <td>DATE</td>
+                                <td>NULL</td>
+                                <td>Ngày mua</td>
+                            </tr>
+                            <tr>
+                                <td><strong>purchase_price</strong></td>
+                                <td>DECIMAL(15,2)</td>
+                                <td>NULL</td>
+                                <td>Giá mua</td>
+                            </tr>
+                            <tr>
+                                <td><strong>warranty_expiry</strong></td>
+                                <td>DATE</td>
+                                <td>NULL</td>
+                                <td>Ngày hết bảo hành</td>
+                            </tr>
+                            <tr>
+                                <td><strong>condition_status</strong></td>
+                                <td>ENUM</td>
+                                <td>'new', 'good', 'fair', 'poor', 'broken'</td>
+                                <td>Tình trạng tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>location</strong></td>
+                                <td>VARCHAR(100)</td>
+                                <td>NULL</td>
+                                <td>Vị trí đặt tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>status</strong></td>
+                                <td>ENUM</td>
+                                <td>'available', 'assigned', 'maintenance', 'retired'</td>
+                                <td>Trạng thái sử dụng</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 5: Asset Assignments -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-handshake me-2"></i>5. asset_assignments - Cấp phát Tài sản
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của phiếu cấp phát</td>
+                            </tr>
+                            <tr>
+                                <td><strong>asset_id</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID tài sản được cấp</td>
+                            </tr>
+                            <tr>
+                                <td><strong>employee_id</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID nhân viên được cấp</td>
+                            </tr>
+                            <tr>
+                                <td><strong>assigned_by</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID người cấp phát (HCNS)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>assigned_date</strong></td>
+                                <td>DATE</td>
+                                <td>NOT NULL</td>
+                                <td>Ngày cấp phát</td>
+                            </tr>
+                            <tr>
+                                <td><strong>expected_return_date</strong></td>
+                                <td>DATE</td>
+                                <td>NULL</td>
+                                <td>Ngày dự kiến thu hồi</td>
+                            </tr>
+                            <tr>
+                                <td><strong>actual_return_date</strong></td>
+                                <td>DATE</td>
+                                <td>NULL</td>
+                                <td>Ngày thu hồi thực tế</td>
+                            </tr>
+                            <tr>
+                                <td><strong>return_condition</strong></td>
+                                <td>ENUM</td>
+                                <td>'good', 'fair', 'poor', 'broken'</td>
+                                <td>Tình trạng khi thu hồi</td>
+                            </tr>
+                            <tr>
+                                <td><strong>assignment_notes</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Ghi chú khi cấp phát</td>
+                            </tr>
+                            <tr>
+                                <td><strong>return_notes</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Ghi chú khi thu hồi</td>
+                            </tr>
+                            <tr>
+                                <td><strong>status</strong></td>
+                                <td>ENUM</td>
+                                <td>'active', 'returned', 'lost', 'damaged'</td>
+                                <td>Trạng thái cấp phát</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 6: Asset History -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-history me-2"></i>6. asset_history - Lịch sử Tài sản
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của bản ghi lịch sử</td>
+                            </tr>
+                            <tr>
+                                <td><strong>asset_id</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID tài sản</td>
+                            </tr>
+                            <tr>
+                                <td><strong>action_type</strong></td>
+                                <td>ENUM</td>
+                                <td>'created', 'assigned', 'returned', 'maintenance', 'repair', 'retired'</td>
+                                <td>Loại hành động</td>
+                            </tr>
+                            <tr>
+                                <td><strong>action_date</strong></td>
+                                <td>TIMESTAMP</td>
+                                <td>DEFAULT CURRENT_TIMESTAMP</td>
+                                <td>Thời gian thực hiện</td>
+                            </tr>
+                            <tr>
+                                <td><strong>performed_by</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID người thực hiện</td>
+                            </tr>
+                            <tr>
+                                <td><strong>old_value</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Giá trị cũ (JSON format)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>new_value</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Giá trị mới (JSON format)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>notes</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Ghi chú</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 7: Incident Reports -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-exclamation-triangle me-2"></i>7. incident_reports - Báo cáo Sự cố
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của báo cáo sự cố</td>
+                            </tr>
+                            <tr>
+                                <td><strong>asset_id</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID tài sản gặp sự cố</td>
+                            </tr>
+                            <tr>
+                                <td><strong>reported_by</strong></td>
+                                <td>INT</td>
+                                <td>NOT NULL, FOREIGN KEY</td>
+                                <td>ID người báo cáo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>incident_type</strong></td>
+                                <td>ENUM</td>
+                                <td>'damage', 'lost', 'theft', 'malfunction'</td>
+                                <td>Loại sự cố</td>
+                            </tr>
+                            <tr>
+                                <td><strong>incident_date</strong></td>
+                                <td>DATE</td>
+                                <td>NOT NULL</td>
+                                <td>Ngày xảy ra sự cố</td>
+                            </tr>
+                            <tr>
+                                <td><strong>description</strong></td>
+                                <td>TEXT</td>
+                                <td>NOT NULL</td>
+                                <td>Mô tả chi tiết sự cố</td>
+                            </tr>
+                            <tr>
+                                <td><strong>resolution</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Cách giải quyết</td>
+                            </tr>
+                            <tr>
+                                <td><strong>status</strong></td>
+                                <td>ENUM</td>
+                                <td>'pending', 'investigating', 'resolved', 'closed'</td>
+                                <td>Trạng thái xử lý</td>
+                            </tr>
+                            <tr>
+                                <td><strong>resolved_by</strong></td>
+                                <td>INT</td>
+                                <td>NULL, FOREIGN KEY</td>
+                                <td>ID người giải quyết</td>
+                            </tr>
+                            <tr>
+                                <td><strong>resolved_date</strong></td>
+                                <td>DATE</td>
+                                <td>NULL</td>
+                                <td>Ngày giải quyết</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 8: Users -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-user-lock me-2"></i>8. users - Người dùng Hệ thống
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của user</td>
+                            </tr>
+                            <tr>
+                                <td><strong>username</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Tên đăng nhập</td>
+                            </tr>
+                            <tr>
+                                <td><strong>password_hash</strong></td>
+                                <td>VARCHAR(255)</td>
+                                <td>NOT NULL</td>
+                                <td>Mật khẩu đã hash</td>
+                            </tr>
+                            <tr>
+                                <td><strong>employee_id</strong></td>
+                                <td>INT</td>
+                                <td>UNIQUE, NOT NULL, FOREIGN KEY</td>
+                                <td>Liên kết với nhân viên</td>
+                            </tr>
+                            <tr>
+                                <td><strong>role</strong></td>
+                                <td>ENUM</td>
+                                <td>'admin', 'hr', 'user'</td>
+                                <td>Vai trò trong hệ thống</td>
+                            </tr>
+                            <tr>
+                                <td><strong>last_login</strong></td>
+                                <td>TIMESTAMP</td>
+                                <td>NULL</td>
+                                <td>Lần đăng nhập cuối</td>
+                            </tr>
+                            <tr>
+                                <td><strong>is_active</strong></td>
+                                <td>BOOLEAN</td>
+                                <td>DEFAULT TRUE</td>
+                                <td>Trạng thái hoạt động</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng 9: System Settings -->
+            <div class="database-table">
+                <div class="table-header">
+                    <i class="fas fa-cogs me-2"></i>9. system_settings - Cấu hình Hệ thống
+                </div>
+                <div class="p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Trường</th>
+                                <th>Kiểu dữ liệu</th>
+                                <th>Ràng buộc</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>id</strong></td>
+                                <td>INT</td>
+                                <td>PRIMARY KEY, AUTO_INCREMENT</td>
+                                <td>ID duy nhất của cấu hình</td>
+                            </tr>
+                            <tr>
+                                <td><strong>setting_key</strong></td>
+                                <td>VARCHAR(50)</td>
+                                <td>UNIQUE, NOT NULL</td>
+                                <td>Khóa cấu hình</td>
+                            </tr>
+                            <tr>
+                                <td><strong>setting_value</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Giá trị cấu hình</td>
+                            </tr>
+                            <tr>
+                                <td><strong>description</strong></td>
+                                <td>TEXT</td>
+                                <td>NULL</td>
+                                <td>Mô tả cấu hình</td>
+                            </tr>
+                            <tr>
+                                <td><strong>updated_by</strong></td>
+                                <td>INT</td>
+                                <td>NULL, FOREIGN KEY</td>
+                                <td>ID người cập nhật</td>
+                            </tr>
+                            <tr>
+                                <td><strong>updated_at</strong></td>
+                                <td>TIMESTAMP</td>
+                                <td>ON UPDATE CURRENT_TIMESTAMP</td>
+                                <td>Thời gian cập nhật</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Indexes và Tối ưu hóa -->
+            <div class="alert alert-success-custom">
+                <h5><i class="fas fa-rocket me-2"></i>Indexes và Tối ưu hóa</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>🔍 Indexes chính:</h6>
+                        <ul>
+                            <li><code>idx_assets_qr_code</code> - Tìm kiếm QR code nhanh</li>
+                            <li><code>idx_assets_asset_code</code> - Tìm kiếm mã tài sản</li>
+                            <li><code>idx_employees_employee_code</code> - Tìm kiếm mã NV</li>
+                            <li><code>idx_asset_assignments_status</code> - Lọc theo trạng thái</li>
+                            <li><code>idx_asset_assignments_dates</code> - Tìm kiếm theo ngày</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>⚡ Tối ưu hóa:</h6>
+                        <ul>
+                            <li><strong>Foreign Keys:</strong> Đảm bảo tính toàn vẹn</li>
+                            <li><strong>ENUM Values:</strong> Tiết kiệm storage</li>
+                            <li><strong>Timestamps:</strong> Tự động tracking</li>
+                            <li><strong>Composite Indexes:</strong> Query phức tạp</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Dữ liệu mẫu -->
+            <div class="alert alert-warning-custom">
+                <h5><i class="fas fa-database me-2"></i>Dữ liệu mẫu</h5>
+                <div class="code-block">
+<pre><code class="language-sql">-- Dữ liệu mẫu cho bảng departments
+INSERT INTO departments (code, name, description) VALUES
+('IT', 'Công nghệ thông tin', 'Bộ phận quản lý hệ thống và phát triển phần mềm'),
+('HR', 'Hành chính nhân sự', 'Bộ phận quản lý nhân sự và hành chính'),
+('ACC', 'Kế toán', 'Bộ phận kế toán và tài chính'),
+('MKT', 'Marketing', 'Bộ phận marketing và truyền thông'),
+('SALE', 'Kinh doanh', 'Bộ phận kinh doanh và bán hàng');
+
+-- Dữ liệu mẫu cho bảng asset_categories
+INSERT INTO asset_categories (code, name, description, depreciation_years) VALUES
+('LAPTOP', 'Laptop', 'Máy tính xách tay', 3),
+('DESKTOP', 'Desktop', 'Máy tính để bàn', 4),
+('MONITOR', 'Monitor', 'Màn hình máy tính', 5),
+('MOUSE', 'Mouse', 'Chuột máy tính', 2),
+('KEYBOARD', 'Keyboard', 'Bàn phím', 3),
+('PRINTER', 'Printer', 'Máy in', 5),
+('PHONE', 'Phone', 'Điện thoại di động', 2);
+
+-- Dữ liệu mẫu cho bảng employees
+INSERT INTO employees (employee_code, full_name, email, department_id, position, hire_date) VALUES
+('NV001', 'Nguyễn Văn An', 'an.nguyen@livespo.vn', 2, 'Trưởng phòng HCNS', '2023-01-15'),
+('NV002', 'Trần Thị Bình', 'binh.tran@livespo.vn', 1, 'Lập trình viên', '2023-02-01'),
+('NV003', 'Lê Văn Cường', 'cuong.le@livespo.vn', 1, 'System Admin', '2023-01-20');</code></pre>
+                </div>
+            </div>
+        </div>
+        <!-- Infrastructure Tab -->
+        <div class="tab-pane fade" id="infrastructure" role="tabpanel">
+            <h2 class="section-title">
+                <i class="fas fa-server me-2"></i>
+                Thiết kế Hạ tầng và Kiến trúc Hệ thống
+            </h2>
+            <!-- Kiến trúc tổng quan -->
+            <div class="architecture-layer">
+                <h4><i class="fas fa-layer-group me-2"></i>Kiến trúc 3-Layer</h4>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="bg-white text-dark rounded p-3 m-2">
+                            <h5><i class="fas fa-desktop me-2"></i>Presentation Layer</h5>
+                            <p><strong>Admin Panel:</strong> React.js<br/>
+                                <strong>Mobile Web:</strong> PWA<br/>
+                                <strong>QR Scanner:</strong> HTML5 Camera</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-white text-dark rounded p-3 m-2">
+                            <h5><i class="fas fa-cogs me-2"></i>Application Layer</h5>
+                            <p><strong>API Gateway:</strong> Nginx<br/>
+                                <strong>Auth Service:</strong> JWT<br/>
+                                <strong>Business Logic:</strong> Node.js/PHP</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-white text-dark rounded p-3 m-2">
+                            <h5><i class="fas fa-database me-2"></i>Data Layer</h5>
+                            <p><strong>Database:</strong> MySQL 8.0+<br/>
+                                <strong>Cache:</strong> Redis<br/>
+                                <strong>Storage:</strong> File System/S3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Technology Stack chi tiết -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="tech-stack">
+                        <h4><i class="fas fa-code me-2"></i>Backend Technology Stack</h4>
+                        <div class="tech-item">
+                            <strong><i class="fab fa-node-js me-2"></i>Runtime Environment:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Option 1:</strong> Node.js 18+ với Express.js 4.18+</li>
+                                <li><strong>Option 2:</strong> PHP 8.1+ với Laravel 10+</li>
+                                <li><strong>Package Manager:</strong> npm/yarn hoặc Composer</li>
+                            </ul>
+                        </div>
+                        <div class="tech-item">
+                            <strong><i class="fas fa-database me-2"></i>Database &amp; Storage:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Primary DB:</strong> MySQL 8.0+ (InnoDB engine)</li>
+                                <li><strong>Cache:</strong> Redis 7.0+ (Session &amp; Data cache)</li>
+                                <li><strong>File Storage:</strong> Local FS hoặc AWS S3</li>
+                                <li><strong>Search:</strong> MySQL Full-text hoặc Elasticsearch</li>
+                            </ul>
+                        </div>
+                        <div class="tech-item">
+                            <strong><i class="fas fa-shield-alt me-2"></i>Security &amp; Auth:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Authentication:</strong> JWT (JSON Web Tokens)</li>
+                                <li><strong>Password:</strong> bcrypt hashing</li>
+                                <li><strong>API Security:</strong> Rate limiting, CORS</li>
+                                <li><strong>Validation:</strong> Joi/Yup schema validation</li>
+                            </ul>
+                        </div>
+                        <div class="tech-item">
+                            <strong><i class="fas fa-qrcode me-2"></i>QR Code &amp; Libraries:</strong>
+                            <ul class="mt-2">
+                                <li><strong>QR Generation:</strong> qrcode (Node.js) hoặc endroid/qr-code (PHP)</li>
+                                <li><strong>Image Processing:</strong> Sharp (Node.js) hoặc Intervention Image (PHP)
+                                </li>
+                                <li><strong>PDF Generation:</strong> PDFKit hoặc TCPDF</li>
+                                <li><strong>Email:</strong> Nodemailer hoặc SwiftMailer</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="tech-stack">
+                        <h4><i class="fas fa-desktop me-2"></i>Frontend Technology Stack</h4>
+                        <div class="tech-item">
+                            <strong><i class="fab fa-react me-2"></i>Admin Panel (React.js):</strong>
+                            <ul class="mt-2">
+                                <li><strong>Framework:</strong> React 18+ với TypeScript</li>
+                                <li><strong>UI Library:</strong> Material-UI (MUI) 5+</li>
+                                <li><strong>State Management:</strong> Redux Toolkit hoặc Zustand</li>
+                                <li><strong>Routing:</strong> React Router 6+</li>
+                                <li><strong>Forms:</strong> React Hook Form + Yup</li>
+                                <li><strong>Charts:</strong> Chart.js hoặc Recharts</li>
+                            </ul>
+                        </div>
+                        <div class="tech-item">
+                            <strong><i class="fas fa-mobile-alt me-2"></i>Mobile Web (PWA):</strong>
+                            <ul class="mt-2">
+                                <li><strong>Framework:</strong> React hoặc Vue.js</li>
+                                <li><strong>PWA:</strong> Service Workers, Web App Manifest</li>
+                                <li><strong>QR Scanner:</strong> HTML5 Camera API + ZXing</li>
+                                <li><strong>Offline:</strong> IndexedDB cho cache</li>
+                                <li><strong>Push Notifications:</strong> Web Push API</li>
+                            </ul>
+                        </div>
+                        <div class="tech-item">
+                            <strong><i class="fas fa-paint-brush me-2"></i>Styling &amp; UI:</strong>
+                            <ul class="mt-2">
+                                <li><strong>CSS Framework:</strong> Bootstrap 5.3+ hoặc Tailwind CSS</li>
+                                <li><strong>Icons:</strong> Font Awesome 6+ hoặc Material Icons</li>
+                                <li><strong>Animations:</strong> Framer Motion hoặc CSS Transitions</li>
+                                <li><strong>Responsive:</strong> Mobile-first design</li>
+                            </ul>
+                        </div>
+                        <div class="tech-item">
+                            <strong><i class="fas fa-tools me-2"></i>Build Tools:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Bundler:</strong> Vite hoặc Webpack 5+</li>
+                                <li><strong>Transpiler:</strong> Babel hoặc SWC</li>
+                                <li><strong>Linting:</strong> ESLint + Prettier</li>
+                                <li><strong>Testing:</strong> Jest + React Testing Library</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- DevOps & Infrastructure -->
+            <div class="tech-stack">
+                <h4><i class="fas fa-cloud me-2"></i>DevOps &amp; Infrastructure</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-server me-2"></i>Web Server:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Reverse Proxy:</strong> Nginx 1.20+</li>
+                                <li><strong>Load Balancer:</strong> Nginx hoặc HAProxy</li>
+                                <li><strong>SSL/TLS:</strong> Let's Encrypt hoặc Commercial SSL</li>
+                                <li><strong>HTTP/2:</strong> Enabled cho performance</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fab fa-docker me-2"></i>Containerization:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Container:</strong> Docker 20.10+</li>
+                                <li><strong>Orchestration:</strong> Docker Compose hoặc Kubernetes</li>
+                                <li><strong>Registry:</strong> Docker Hub hoặc Private Registry</li>
+                                <li><strong>Multi-stage:</strong> Optimized Docker builds</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-code-branch me-2"></i>CI/CD Pipeline:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Version Control:</strong> Git với GitFlow</li>
+                                <li><strong>CI/CD:</strong> GitHub Actions hoặc GitLab CI</li>
+                                <li><strong>Testing:</strong> Automated unit &amp; integration tests</li>
+                                <li><strong>Deployment:</strong> Blue-Green hoặc Rolling updates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Deployment Options -->
+            <div class="alert alert-warning-custom">
+                <h5><i class="fas fa-cloud me-2"></i>Tùy chọn Triển khai</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-building me-2"></i>Option 1: On-Premise</h6>
+                        <div class="tech-item">
+                            <strong>Yêu cầu phần cứng:</strong>
+                            <ul>
+                                <li><strong>CPU:</strong> 4 cores, 2.5GHz+ (Intel i5/AMD Ryzen 5)</li>
+                                <li><strong>RAM:</strong> 8GB+ (16GB khuyến nghị)</li>
+                                <li><strong>Storage:</strong> 500GB SSD (1TB khuyến nghị)</li>
+                                <li><strong>Network:</strong> 100Mbps+ internet</li>
+                            </ul>
+                            <strong>Chi phí ước tính:</strong>
+                            <ul>
+                                <li><strong>Hardware:</strong> 15-25 triệu VNĐ (one-time)</li>
+                                <li><strong>Software:</strong> 2-3 triệu VNĐ/năm</li>
+                                <li><strong>Maintenance:</strong> 3-5 triệu VNĐ/năm</li>
+                                <li><strong>Total Year 1:</strong> 20-33 triệu VNĐ</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-cloud me-2"></i>Option 2: Cloud (AWS/Azure)</h6>
+                        <div class="tech-item">
+                            <strong>AWS Services:</strong>
+                            <ul>
+                                <li><strong>Compute:</strong> EC2 t3.medium (2 instances)</li>
+                                <li><strong>Database:</strong> RDS MySQL (db.t3.micro)</li>
+                                <li><strong>Cache:</strong> ElastiCache Redis</li>
+                                <li><strong>Storage:</strong> S3 + CloudFront CDN</li>
+                                <li><strong>Load Balancer:</strong> Application Load Balancer</li>
+                            </ul>
+                            <strong>Chi phí ước tính (monthly):</strong>
+                            <ul>
+                                <li><strong>EC2:</strong> $40-60/tháng</li>
+                                <li><strong>RDS:</strong> $15-25/tháng</li>
+                                <li><strong>Storage &amp; CDN:</strong> $10-20/tháng</li>
+                                <li><strong>Total Annual:</strong> 18-30 triệu VNĐ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Security & Compliance -->
+            <div class="tech-stack">
+                <h4><i class="fas fa-shield-alt me-2"></i>Bảo mật và Tuân thủ</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-lock me-2"></i>Data Security:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Encryption:</strong> AES-256 at rest, TLS 1.3 in transit</li>
+                                <li><strong>Database:</strong> MySQL encryption, encrypted backups</li>
+                                <li><strong>Files:</strong> Encrypted file storage</li>
+                                <li><strong>Secrets:</strong> Environment variables, Vault</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-user-shield me-2"></i>Access Control:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Authentication:</strong> Multi-factor authentication (MFA)</li>
+                                <li><strong>Authorization:</strong> Role-based access control (RBAC)</li>
+                                <li><strong>Session:</strong> Secure session management</li>
+                                <li><strong>API:</strong> Rate limiting, API keys</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-eye me-2"></i>Monitoring &amp; Audit:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Logging:</strong> Structured logging (JSON format)</li>
+                                <li><strong>Monitoring:</strong> Prometheus + Grafana</li>
+                                <li><strong>Alerting:</strong> Email/Slack notifications</li>
+                                <li><strong>Audit Trail:</strong> User action logging</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Backup & Recovery -->
+            <div class="tech-stack">
+                <h4><i class="fas fa-database me-2"></i>Backup và Disaster Recovery</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-save me-2"></i>Backup Strategy:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Database:</strong> Daily full backup + hourly incremental</li>
+                                <li><strong>Files:</strong> Daily backup của QR images và documents</li>
+                                <li><strong>Configuration:</strong> Version control cho configs</li>
+                                <li><strong>Retention:</strong> 30 ngày local, 1 năm offsite</li>
+                                <li><strong>Testing:</strong> Monthly restore testing</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-redo me-2"></i>Disaster Recovery:</strong>
+                            <ul class="mt-2">
+                                <li><strong>RTO (Recovery Time):</strong> &lt; 4 hours</li>
+                                <li><strong>RPO (Recovery Point):</strong> &lt; 1 hour</li>
+                                <li><strong>Hot Standby:</strong> Secondary server sẵn sàng</li>
+                                <li><strong>Failover:</strong> Automatic DNS switching</li>
+                                <li><strong>Documentation:</strong> Step-by-step recovery procedures</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Performance & Scalability -->
+            <div class="tech-stack">
+                <h4><i class="fas fa-tachometer-alt me-2"></i>Performance và Scalability</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-rocket me-2"></i>Performance Optimization:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Database:</strong> Query optimization, indexing</li>
+                                <li><strong>Caching:</strong> Redis cho session và data cache</li>
+                                <li><strong>CDN:</strong> Static assets delivery</li>
+                                <li><strong>Compression:</strong> Gzip/Brotli compression</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-expand-arrows-alt me-2"></i>Horizontal Scaling:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Load Balancer:</strong> Multiple app servers</li>
+                                <li><strong>Database:</strong> Read replicas</li>
+                                <li><strong>Session:</strong> Stateless design với Redis</li>
+                                <li><strong>Files:</strong> Distributed storage</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="tech-item">
+                            <strong><i class="fas fa-chart-line me-2"></i>Monitoring Metrics:</strong>
+                            <ul class="mt-2">
+                                <li><strong>Response Time:</strong> &lt; 200ms average</li>
+                                <li><strong>Throughput:</strong> 1000+ requests/minute</li>
+                                <li><strong>Uptime:</strong> 99.9% availability</li>
+                                <li><strong>Error Rate:</strong> &lt; 0.1%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Migration Plan -->
+            <div class="alert alert-success-custom">
+                <h5><i class="fas fa-route me-2"></i>Kế hoạch Triển khai (10 tuần)</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Phase 1: Infrastructure Setup (Tuần 1-2)</h6>
+                        <ul>
+                            <li>Setup development environment</li>
+                            <li>Configure database và basic services</li>
+                            <li>Implement authentication system</li>
+                            <li>Setup CI/CD pipeline</li>
+                        </ul>
+                        <h6>Phase 2: Core Features (Tuần 3-6)</h6>
+                        <ul>
+                            <li>Asset management functionality</li>
+                            <li>QR code generation và scanning</li>
+                            <li>Employee management</li>
+                            <li>Basic assignment features</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Phase 3: Advanced Features (Tuần 7-8)</h6>
+                        <ul>
+                            <li>Notification system</li>
+                            <li>Advanced reporting</li>
+                            <li>Mobile optimization</li>
+                            <li>Incident reporting</li>
+                        </ul>
+                        <h6>Phase 4: Testing &amp; Go-Live (Tuần 9-10)</h6>
+                        <ul>
+                            <li>User acceptance testing</li>
+                            <li>Performance testing</li>
+                            <li>Security audit</li>
+                            <li>Production deployment</li>
+                            <li>User training và support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Manual Tab -->
+        <div class="tab-pane fade" id="manual" role="tabpanel">
+            <h2 class="section-title">
+                <i class="fas fa-book me-2"></i>
+                Hướng dẫn Sử dụng Hệ thống
+            </h2>
+            <div class="alert alert-info-custom">
+                <h5><i class="fas fa-info-circle me-2"></i>Tổng quan Hệ thống</h5>
+                <p><strong>Mục đích:</strong> Hệ thống quản lý tài sản bằng QR code giúp công ty Livespo theo dõi và
+                    quản lý tài sản một cách hiệu quả, từ việc cấp phát đến thu hồi.</p>
+                <p class="mb-0"><strong>Đối tượng sử dụng:</strong> HCNS (Admin) - Quản lý toàn bộ hệ thống | Nhân viên
+                    - Xem thông tin tài sản thông qua QR code</p>
+            </div>
+            <!-- Hướng dẫn đăng nhập -->
+            <div class="manual-section">
+                <h4><i class="fas fa-sign-in-alt me-2"></i>Đăng nhập Hệ thống</h4>
+                <div class="step-card">
+                    <h5>Truy cập hệ thống:</h5>
+                    <ol>
+                        <li>Mở trình duyệt web (Chrome, Firefox, Safari, Edge)</li>
+                        <li>Truy cập: <code>https://qlts.livespo.vn/admin</code></li>
+                        <li>Nhập thông tin đăng nhập:
+                            <ul>
+                                <li><strong>Tên đăng nhập:</strong> Được cấp bởi IT</li>
+                                <li><strong>Mật khẩu:</strong> Được cấp bởi IT</li>
+                            </ul>
+                        </li>
+                        <li>Nhấn "Đăng nhập"</li>
+                    </ol>
+                    <div class="alert alert-warning mt-3">
+                        <strong>Lần đăng nhập đầu tiên:</strong>
+                        <ul class="mb-0">
+                            <li>Hệ thống sẽ yêu cầu đổi mật khẩu</li>
+                            <li>Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số</li>
+                            <li>Không sử dụng mật khẩu dễ đoán như ngày sinh, tên công ty</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Hướng dẫn cho HCNS -->
+            <div class="manual-section">
+                <h4><i class="fas fa-user-tie me-2"></i>Hướng dẫn cho HCNS (Admin)</h4>
+                <!-- Dashboard -->
+                <div class="step-card">
+                    <h5><i class="fas fa-tachometer-alt me-2"></i>Dashboard - Trang chủ</h5>
+                    <p>Sau khi đăng nhập, bạn sẽ thấy dashboard với các thông tin:</p>
+                    <ul>
+                        <li><strong>Tổng số tài sản:</strong> Số lượng tài sản hiện có trong hệ thống</li>
+                        <li><strong>Tài sản đang sử dụng:</strong> Số tài sản đã được cấp phát cho nhân viên</li>
+                        <li><strong>Tài sản sắp hết hạn:</strong> Cảnh báo tài sản cần thu hồi trong 30 ngày</li>
+                        <li><strong>Báo cáo sự cố:</strong> Số lượng sự cố chưa được giải quyết</li>
+                    </ul>
+                </div>
+                <!-- Quản lý nhân viên -->
+                <div class="step-card">
+                    <h5><i class="fas fa-users me-2"></i>Quản lý Nhân viên</h5>
+                    <h6>Thêm nhân viên mới:</h6>
+                    <ol>
+                        <li>Vào menu "Nhân viên" → "Thêm mới"</li>
+                        <li>Điền thông tin:
+                            <ul>
+                                <li><strong>Mã nhân viên:</strong> VD: NV001 (hệ thống tự động tăng)</li>
+                                <li><strong>Họ tên:</strong> Họ tên đầy đủ</li>
+                                <li><strong>Email:</strong> Email công ty (@livespo.vn)</li>
+                                <li><strong>Bộ phận:</strong> Chọn từ danh sách có sẵn</li>
+                                <li><strong>Chức vụ:</strong> Vị trí công việc</li>
+                                <li><strong>Ngày vào làm:</strong> Chọn từ lịch</li>
+                            </ul>
+                        </li>
+                        <li>Nhấn "Lưu"</li>
+                    </ol>
+                    <h6>Chỉnh sửa thông tin nhân viên:</h6>
+                    <ol>
+                        <li>Vào "Danh sách nhân viên"</li>
+                        <li>Sử dụng tìm kiếm hoặc lọc để tìm nhân viên cần sửa</li>
+                        <li>Nhấn biểu tượng "Chỉnh sửa" (✏️)</li>
+                        <li>Cập nhật thông tin cần thiết</li>
+                        <li>Nhấn "Lưu thay đổi"</li>
+                    </ol>
+                </div>
+                <!-- Quản lý tài sản -->
+                <div class="step-card">
+                    <h5><i class="fas fa-laptop me-2"></i>Quản lý Tài sản</h5>
+                    <h6>Thêm tài sản mới:</h6>
+                    <ol>
+                        <li>Vào menu "Tài sản" → "Thêm mới"</li>
+                        <li>Điền thông tin tài sản:
+                            <ul>
+                                <li><strong>Tên tài sản:</strong> VD: Laptop Dell Inspiron 15</li>
+                                <li><strong>Loại tài sản:</strong> Chọn từ danh sách (Laptop, Desktop, Monitor, etc.)
+                                </li>
+                                <li><strong>Thương hiệu:</strong> VD: Dell, HP, Asus</li>
+                                <li><strong>Model:</strong> VD: Inspiron 15 3000</li>
+                                <li><strong>Số serial:</strong> Ghi chính xác số serial trên thiết bị</li>
+                                <li><strong>Ngày mua:</strong> Chọn từ lịch</li>
+                                <li><strong>Giá mua:</strong> Nhập số tiền (VNĐ)</li>
+                                <li><strong>Tình trạng:</strong> Mới/Tốt/Khá/Kém</li>
+                                <li><strong>Vị trí:</strong> Nơi đặt tài sản</li>
+                            </ul>
+                        </li>
+                        <li>Nhấn "Lưu"</li>
+                        <li>Hệ thống sẽ tự động:
+                            <ul>
+                                <li>Tạo mã tài sản (VD: TS0001)</li>
+                                <li>Tạo QR code tương ứng</li>
+                                <li>Hiển thị QR code để in</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <h6>In QR code:</h6>
+                    <ol>
+                        <li>Sau khi thêm tài sản, nhấn "In QR code"</li>
+                        <li>QR code sẽ hiển thị với thông tin:
+                            <ul>
+                                <li>Mã tài sản</li>
+                                <li>Tên tài sản</li>
+                                <li>Link: https://qlts.livespo.vn/ts0001</li>
+                            </ul>
+                        </li>
+                        <li>In trên giấy dán (khuyến nghị: giấy dán chống nước, kích thước 3x3cm)</li>
+                        <li>Dán QR code lên vị trí dễ nhìn trên tài sản</li>
+                    </ol>
+                </div>
+                <!-- Cấp phát tài sản -->
+                <div class="step-card">
+                    <h5><i class="fas fa-handshake me-2"></i>Cấp phát Tài sản</h5>
+                    <h6>Cấp phát tài sản cho nhân viên:</h6>
+                    <ol>
+                        <li>Vào menu "Cấp phát" → "Cấp phát mới"</li>
+                        <li>Chọn thông tin:
+                            <ul>
+                                <li><strong>Tài sản:</strong> Tìm kiếm và chọn tài sản cần cấp (chỉ hiển thị tài sản có
+                                    sẵn)
+                                </li>
+                                <li><strong>Nhân viên:</strong> Tìm kiếm và chọn nhân viên nhận tài sản</li>
+                                <li><strong>Ngày cấp phát:</strong> Mặc định là hôm nay, có thể thay đổi</li>
+                                <li><strong>Ngày dự kiến thu hồi:</strong> Chọn từ lịch (thường là 2-3 năm)</li>
+                                <li><strong>Ghi chú:</strong> Thông tin bổ sung (nếu có)</li>
+                            </ul>
+                        </li>
+                        <li>Nhấn "Cấp phát"</li>
+                        <li>In "Biên bản bàn giao tài sản" để nhân viên ký nhận</li>
+                        <li>Lưu trữ biên bản đã ký</li>
+                    </ol>
+                    <h6>Xem danh sách tài sản đã cấp phát:</h6>
+                    <ol>
+                        <li>Vào menu "Cấp phát" → "Danh sách cấp phát"</li>
+                        <li>Có thể lọc theo:
+                            <ul>
+                                <li>Nhân viên cụ thể</li>
+                                <li>Bộ phận</li>
+                                <li>Loại tài sản</li>
+                                <li>Trạng thái (Đang sử dụng/Đã thu hồi)</li>
+                                <li>Khoảng thời gian</li>
+                            </ul>
+                        </li>
+                        <li>Xuất danh sách ra Excel để báo cáo</li>
+                    </ol>
+                </div>
+                <!-- Thu hồi tài sản -->
+                <div class="step-card">
+                    <h5><i class="fas fa-undo me-2"></i>Thu hồi Tài sản</h5>
+                    <h6>Thu hồi tài sản:</h6>
+                    <ol>
+                        <li>Vào "Danh sách cấp phát"</li>
+                        <li>Tìm tài sản cần thu hồi (có thể tìm theo tên nhân viên hoặc mã tài sản)</li>
+                        <li>Nhấn "Thu hồi" ở cột thao tác</li>
+                        <li>Điền thông tin thu hồi:
+                            <ul>
+                                <li><strong>Ngày thu hồi:</strong> Mặc định là hôm nay</li>
+                                <li><strong>Tình trạng khi thu hồi:</strong> Tốt/Khá/Kém/Hỏng</li>
+                                <li><strong>Lý do thu hồi:</strong> Nghỉ việc/Chuyển bộ phận/Hỏng/Nâng cấp/Khác</li>
+                                <li><strong>Ghi chú:</strong> Mô tả chi tiết tình trạng tài sản (nếu có)</li>
+                            </ul>
+                        </li>
+                        <li>Nhấn "Xác nhận thu hồi"</li>
+                        <li>In biên bản thu hồi để nhân viên ký xác nhận</li>
+                    </ol>
+                </div>
+                <!-- Báo cáo và thống kê -->
+                <div class="step-card">
+                    <h5><i class="fas fa-chart-bar me-2"></i>Báo cáo và Thống kê</h5>
+                    <h6>Các loại báo cáo có sẵn:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Báo cáo tài sản theo trạng thái:</strong>
+                                    <ul>
+                                        <li>Tài sản đang sử dụng</li>
+                                        <li>Tài sản có sẵn</li>
+                                        <li>Tài sản bảo trì</li>
+                                        <li>Tài sản đã thanh lý</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Báo cáo tài sản theo bộ phận:</strong>
+                                    <ul>
+                                        <li>Số lượng tài sản mỗi bộ phận</li>
+                                        <li>Giá trị tài sản theo bộ phận</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Báo cáo tài sản sắp hết hạn:</strong>
+                                    <ul>
+                                        <li>Danh sách tài sản cần thu hồi trong 30 ngày</li>
+                                        <li>Tự động gửi email cảnh báo hàng tuần</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Báo cáo lịch sử sử dụng:</strong>
+                                    <ul>
+                                        <li>Lịch sử cấp phát/thu hồi của từng tài sản</li>
+                                        <li>Thời gian sử dụng trung bình</li>
+                                        <li>Tần suất sự cố</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <h6>Xuất báo cáo:</h6>
+                    <ol>
+                        <li>Chọn loại báo cáo cần xuất</li>
+                        <li>Thiết lập bộ lọc:
+                            <ul>
+                                <li>Khoảng thời gian</li>
+                                <li>Bộ phận cụ thể</li>
+                                <li>Loại tài sản</li>
+                                <li>Trạng thái</li>
+                            </ul>
+                        </li>
+                        <li>Chọn định dạng: "Xuất Excel" hoặc "Xuất PDF"</li>
+                        <li>Nhấn "Tạo báo cáo"</li>
+                        <li>Tải file về máy tính</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Hướng dẫn cho nhân viên -->
+            <div class="manual-section">
+                <h4><i class="fas fa-users me-2"></i>Hướng dẫn cho Nhân viên</h4>
+                <div class="step-card">
+                    <h5><i class="fas fa-camera me-2"></i>Quét QR code xem thông tin tài sản</h5>
+                    <h6>Sử dụng điện thoại:</h6>
+                    <ol>
+                        <li>Mở ứng dụng Camera trên điện thoại (iPhone/Android)</li>
+                        <li>Hoặc tải ứng dụng QR Scanner từ App Store/Google Play</li>
+                        <li>Hướng camera vào QR code trên tài sản</li>
+                        <li>Nhấn vào link hiển thị: https://qlts.livespo.vn/ts0001</li>
+                        <li>Xem thông tin tài sản hiển thị:
+                            <ul>
+                                <li>Mã nhân viên được cấp</li>
+                                <li>Tên nhân viên</li>
+                                <li>Bộ phận</li>
+                                <li>Loại thiết bị</li>
+                                <li>Ngày bắt đầu sử dụng</li>
+                                <li>Ngày kết thúc sử dụng</li>
+                                <li>Thông tin kỹ thuật (thương hiệu, model, serial)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <div class="alert alert-info mt-3">
+                        <strong>Lưu ý:</strong>
+                        <ul class="mb-0">
+                            <li>Không cần đăng nhập để xem thông tin cơ bản</li>
+                            <li>Thông tin hiển thị theo thời gian thực</li>
+                            <li>Nếu QR code không hoạt động, liên hệ HCNS</li>
+                            <li>Có thể lưu link vào bookmark để truy cập nhanh</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Báo cáo Sự cố</h5>
+                    <h6>Khi tài sản gặp sự cố:</h6>
+                    <ol>
+                        <li>Truy cập: <code>https://qlts.livespo.vn/report</code></li>
+                        <li>Quét QR code của tài sản gặp sự cố</li>
+                        <li>Chọn loại sự cố:
+                            <ul>
+                                <li><strong>Hỏng hóc:</strong> Thiết bị không hoạt động bình thường</li>
+                                <li><strong>Mất mát:</strong> Thiết bị bị mất hoặc thất lạc</li>
+                                <li><strong>Cần bảo trì:</strong> Thiết bị cần được kiểm tra/bảo trì</li>
+                                <li><strong>Khác:</strong> Các vấn đề khác</li>
+                            </ul>
+                        </li>
+                        <li>Mô tả chi tiết sự cố:
+                            <ul>
+                                <li>Thời gian xảy ra</li>
+                                <li>Triệu chứng cụ thể</li>
+                                <li>Nguyên nhân có thể</li>
+                                <li>Tác động đến công việc</li>
+                            </ul>
+                        </li>
+                        <li>Chụp ảnh minh họa (nếu có thể)</li>
+                        <li>Nhập thông tin liên hệ (email, số điện thoại)</li>
+                        <li>Nhấn "Gửi báo cáo"</li>
+                        <li>Hệ thống sẽ gửi mã số báo cáo để theo dõi</li>
+                        <li>HCNS sẽ nhận được thông báo và liên hệ xử lý</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Các tình huống thường gặp -->
+            <div class="manual-section">
+                <h4><i class="fas fa-question-circle me-2"></i>Các Tình huống Thường gặp</h4>
+                <div class="step-card">
+                    <h5><i class="fas fa-qrcode me-2"></i>QR code không quét được</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Nguyên nhân có thể:</strong>
+                            <ul>
+                                <li>QR code bị hỏng, mờ, bị che khuất</li>
+                                <li>Camera điện thoại không rõ nét</li>
+                                <li>Ánh sáng không đủ hoặc quá chói</li>
+                                <li>Khoảng cách quá gần hoặc quá xa</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Giải pháp:</strong>
+                            <ul>
+                                <li>Lau sạch QR code và camera điện thoại</li>
+                                <li>Cải thiện ánh sáng (tránh ánh sáng chói)</li>
+                                <li>Điều chỉnh khoảng cách (15-20cm)</li>
+                                <li>Thử với điện thoại khác</li>
+                                <li>Liên hệ HCNS để in lại QR code</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Thông tin hiển thị không đúng</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Nguyên nhân:</strong>
+                            <ul>
+                                <li>Dữ liệu chưa được cập nhật</li>
+                                <li>QR code bị nhầm lẫn hoặc dán sai</li>
+                                <li>Lỗi hệ thống tạm thời</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Giải pháp:</strong>
+                            <ul>
+                                <li>Kiểm tra lại mã tài sản trên QR code</li>
+                                <li>Refresh trang web và thử lại</li>
+                                <li>Liên hệ HCNS để kiểm tra dữ liệu</li>
+                                <li>Báo cáo lỗi qua email hoặc điện thoại</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <h5><i class="fas fa-wifi me-2"></i>Không thể truy cập hệ thống</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Nguyên nhân:</strong>
+                            <ul>
+                                <li>Mạng internet không ổn định</li>
+                                <li>Server đang bảo trì</li>
+                                <li>Trình duyệt không tương thích</li>
+                                <li>Firewall công ty chặn truy cập</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Giải pháp:</strong>
+                            <ul>
+                                <li>Kiểm tra kết nối internet</li>
+                                <li>Thử trình duyệt khác (Chrome, Firefox)</li>
+                                <li>Xóa cache và cookies</li>
+                                <li>Liên hệ IT support để kiểm tra</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảo mật và an toàn -->
+            <div class="manual-section">
+                <h4><i class="fas fa-shield-alt me-2"></i>Bảo mật và An toàn</h4>
+                <div class="step-card">
+                    <h5>Quy định bảo mật:</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li>Không chia sẻ thông tin đăng nhập với người khác</li>
+                                <li>Đăng xuất khỏi hệ thống sau khi sử dụng</li>
+                                <li>Không truy cập hệ thống từ máy tính công cộng</li>
+                                <li>Sử dụng mật khẩu mạnh và thay đổi định kỳ</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li>Báo ngay nếu phát hiện truy cập bất thường</li>
+                                <li>Không cài đặt phần mềm lạ trên máy tính công ty</li>
+                                <li>Cập nhật trình duyệt và hệ điều hành thường xuyên</li>
+                                <li>Sao lưu dữ liệu quan trọng định kỳ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <h5>Bảo vệ QR code:</h5>
+                    <ul>
+                        <li>Không tự ý tháo gỡ hoặc di chuyển QR code</li>
+                        <li>Báo ngay cho HCNS nếu QR code bị hỏng, mờ hoặc mất</li>
+                        <li>Không dán QR code lên tài sản khác</li>
+                        <li>Bảo vệ QR code khỏi nước, nhiệt độ cao, va đập</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Thông tin liên hệ -->
+            <div class="alert alert-info-custom">
+                <h5><i class="fas fa-phone me-2"></i>Thông tin Liên hệ Hỗ trợ</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-tools me-2"></i>Hỗ trợ Kỹ thuật</h6>
+                        <ul>
+                            <li>📧 <strong>Email:</strong> it-support@livespo.vn</li>
+                            <li>📞 <strong>Điện thoại:</strong> Ext. 101</li>
+                            <li>🕐 <strong>Thời gian:</strong> 8:00 - 17:30 (T2-T6)</li>
+                            <li>📍 <strong>Địa điểm:</strong> Tầng 3, phòng IT</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-user-tie me-2"></i>Hỗ trợ Nghiệp vụ</h6>
+                        <ul>
+                            <li>📧 <strong>Email:</strong> hr@livespo.vn</li>
+                            <li>📞 <strong>Điện thoại:</strong> Ext. 102</li>
+                            <li>🕐 <strong>Thời gian:</strong> 8:00 - 17:30 (T2-T6)</li>
+                            <li>📍 <strong>Địa điểm:</strong> Tầng 2, phòng HCNS</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Báo cáo Khẩn cấp</h6>
+                        <ul>
+                            <li><strong>Mất mát tài sản:</strong> Báo ngay cho HCNS</li>
+                            <li><strong>Sự cố bảo mật:</strong> Báo ngay cho IT</li>
+                            <li><strong>Tài sản hỏng nghiêm trọng:</strong> Báo HCNS + IT</li>
+                            <li><strong>Hotline 24/7:</strong> 0901.234.567</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ -->
+            <div class="alert alert-success-custom">
+                <h5><i class="fas fa-question-circle me-2"></i>Câu hỏi Thường gặp (FAQ)</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Q: Tôi quên mật khẩu đăng nhập?</h6>
+                        <p>A: Liên hệ IT support để reset mật khẩu. Cần cung cấp mã nhân viên và email công ty.</p>
+                        <h6>Q: QR code bị mờ, làm sao để in lại?</h6>
+                        <p>A: Liên hệ HCNS, cung cấp mã tài sản để được in lại QR code mới.</p>
+                        <h6>Q: Tôi có thể xem tài sản của đồng nghiệp không?</h6>
+                        <p>A: Không, mỗi nhân viên chỉ có thể xem thông tin tài sản được cấp cho mình.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Q: Làm sao để báo cáo tài sản bị mất?</h6>
+                        <p>A: Sử dụng chức năng "Báo cáo sự cố" hoặc liên hệ trực tiếp HCNS ngay lập tức.</p>
+                        <h6>Q: Tôi chuyển bộ phận, tài sản có được chuyển theo không?</h6>
+                        <p>A: Tùy thuộc vào chính sách công ty. HCNS sẽ quyết định thu hồi hay chuyển giao.</p>
+                        <h6>Q: Hệ thống có hoạt động trên điện thoại không?</h6>
+                        <p>A: Có, hệ thống tương thích với mọi thiết bị có trình duyệt web và camera.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<div class="footer-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-building me-2"></i>Livespo Vietnam Co., Ltd</h5>
+                <p>Hệ thống Quản lý Tài sản bằng QR Code</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p>Phân tích và Thiết kế Hệ thống</p>
+                <p><i class="fas fa-calendar me-2"></i>Cập nhật: <span id="footerDate"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop">
+    <i class="fas fa-arrow-up"></i>
+</button>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script>
+    // Initialize Mermaid
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: 'default',
+        themeVariables: {
+            primaryColor: '#3498db',
+            primaryTextColor: '#2c3e50',
+            primaryBorderColor: '#2980b9',
+            lineColor: '#34495e',
+            secondaryColor: '#ecf0f1',
+            tertiaryColor: '#f8f9fa',
+            background: '#ffffff',
+            mainBkg: '#ffffff',
+            secondBkg: '#f8f9fa'
+        },
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis',
+            padding: 20
+        },
+        er: {
+            useMaxWidth: true
+        },
+        securityLevel: 'loose'
+    });
+
+
+    // Function to render Mermaid diagrams (safe for tabs)
+    function primeMermaidSources(root) {
+        (root || document).querySelectorAll('.mermaid').forEach(el => {
+            if (!el.dataset.src) {
+                // Keep the raw text for future re-renders (before it turns into SVG)
+                el.dataset.src = el.textContent;
+            }
+        });
+    }
+
+    async function renderMermaidIn(el) {
+        if (!el) return;
+        try {
+            // restore raw text, remove processed flag and old SVG
+            el.removeAttribute('data-processed');
+            el.innerHTML = '';
+            el.textContent = el.dataset.src || el.textContent;
+            mermaid.init(undefined, [el]);
+        } catch (err) {
+            console.error('Mermaid rendering error:', err);
+        }
+    }
+
+    function renderMermaidDiagrams(root) {
+        primeMermaidSources(root);
+        const targets = (root || document).querySelectorAll('.mermaid');
+        targets.forEach(el => {
+            renderMermaidIn(el);
+        });
+    }
+
+    // Optional: detailed parse errors
+    mermaid.parseError = (err, hash) => {
+        const msg = (err && (err.str || err.message)) ? (err.str || err.message) : String(err);
+        const loc = hash && hash.loc ? ` (dòng ${hash.loc.first_line}, cột ${hash.loc.first_column})` : '';
+        console.error('Mermaid parse error:', msg, loc, hash);
+        // alert('Mermaid parse error: ' + msg + loc);
+    };
+
+
+    // Set current date and initialize
+    document.addEventListener('DOMContentLoaded', function () {
+        const now = new Date();
+        const dateString = now.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        document.getElementById('currentDate').textContent = dateString;
+        document.getElementById('footerDate').textContent = dateString;
+
+        // Prime sources and render visible diagrams in the active pane
+        primeMermaidSources(document);
+        const activePane = document.querySelector('.tab-pane.show.active') || document;
+        setTimeout(() => {
+            renderMermaidDiagrams(activePane);
+        }, 1000);
+    });
+
+    // Scroll to top functionality
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+
+    window.addEventListener('scroll', function () {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('show');
+        } else {
+            scrollToTopBtn.classList.remove('show');
+        }
+    });
+
+    scrollToTopBtn.addEventListener('click', function () {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Tab switching with animation
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function (e) {
+            // Add fade-in animation to active tab content
+            const targetPane = document.querySelector(e.target.getAttribute('data-bs-target'));
+            targetPane.style.opacity = '0';
+            targetPane.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                targetPane.style.transition = 'all 0.5s ease';
+                targetPane.style.opacity = '1';
+                targetPane.style.transform = 'translateY(0)';
+
+                // Render Mermaid diagrams for any tab that contains them
+                setTimeout(() => {
+                    const hasMermaid = targetPane && targetPane.querySelector('.mermaid');
+                    if (hasMermaid) {
+                        renderMermaidDiagrams(targetPane);
+                    }
+                }, 80);
+            }, 50);
+        });
+    });
+
+    // Add hover effects to cards
+    document.querySelectorAll('.feature-card, .usecase-card, .step-card').forEach(card => {
+        card.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+        });
+    });
+
+    // Progress bar animation (if needed)
+    function animateProgressBars() {
+        document.querySelectorAll('.progress-bar-custom').forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 2s ease-in-out';
+                bar.style.width = width;
+            }, 500);
+        });
+    }
+
+    // Initialize progress bars when infrastructure tab is shown
+    document.getElementById('infrastructure-tab').addEventListener('shown.bs.tab', animateProgressBars);
+</script>
+</body>
+</html>
