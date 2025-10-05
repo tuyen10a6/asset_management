@@ -14,16 +14,16 @@
     <div class="card-body">
         <form action="{{ route('assignments.store') }}" method="POST">
             @csrf
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="asset_id" class="form-label">Tài sản <span class="text-danger">*</span></label>
-                        <select class="form-select @error('asset_id') is-invalid @enderror" 
+                        <select class="form-select @error('asset_id') is-invalid @enderror"
                                 id="asset_id" name="asset_id" required>
                             <option value="">Chọn tài sản</option>
                             @foreach($availableAssets as $asset)
-                                <option value="{{ $asset->id }}" 
+                                <option value="{{ $asset->id }}"
                                         {{ (old('asset_id') == $asset->id || (isset($selectedAssetId) && $selectedAssetId == $asset->id)) ? 'selected' : '' }}
                                         data-category="{{ $asset->category->name }}"
                                         data-brand="{{ $asset->brand }}"
@@ -48,11 +48,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="employee_id" class="form-label">Nhân viên <span class="text-danger">*</span></label>
-                        <select class="form-select @error('employee_id') is-invalid @enderror" 
+                        <select class="form-select @error('employee_id') is-invalid @enderror"
                                 id="employee_id" name="employee_id" required>
                             <option value="">Chọn nhân viên</option>
                             @foreach($employees as $employee)
@@ -79,23 +79,23 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="assigned_date" class="form-label">Ngày cấp phát <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control @error('assigned_date') is-invalid @enderror" 
+                        <input type="date" class="form-control @error('assigned_date') is-invalid @enderror"
                                id="assigned_date" name="assigned_date" value="{{ old('assigned_date', date('Y-m-d')) }}" required>
                         @error('assigned_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
-                
+
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="expected_return_date" class="form-label">Ngày dự kiến thu hồi</label>
-                        <input type="date" class="form-control @error('expected_return_date') is-invalid @enderror" 
+                        <input type="date" class="form-control @error('expected_return_date') is-invalid @enderror"
                                id="expected_return_date" name="expected_return_date" value="{{ old('expected_return_date') }}">
                         @error('expected_return_date')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -104,16 +104,16 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="mb-3">
                 <label for="assignment_notes" class="form-label">Ghi chú</label>
-                <textarea class="form-control @error('assignment_notes') is-invalid @enderror" 
+                <textarea class="form-control @error('assignment_notes') is-invalid @enderror"
                           id="assignment_notes" name="assignment_notes" rows="3">{{ old('assignment_notes') }}</textarea>
                 @error('assignment_notes')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-            
+
             <div class="d-flex justify-content-end gap-2">
                 <a href="{{ route('assignments.index') }}" class="btn btn-secondary">Hủy</a>
                 <button type="submit" class="btn btn-primary">
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const employeeSelect = document.getElementById('employee_id');
     const assetInfo = document.getElementById('asset-info');
     const employeeInfo = document.getElementById('employee-info');
-    
+
     // Show asset info when selected
     assetSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             assetInfo.style.display = 'none';
         }
     });
-    
+
     // Show employee info when selected
     employeeSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
@@ -156,15 +156,15 @@ document.addEventListener('DOMContentLoaded', function() {
             employeeInfo.style.display = 'none';
         }
     });
-    
+
     // Set minimum date for expected return date
     const assignedDateInput = document.getElementById('assigned_date');
     const expectedReturnDateInput = document.getElementById('expected_return_date');
-    
+
     assignedDateInput.addEventListener('change', function() {
         expectedReturnDateInput.min = this.value;
     });
-    
+
     // Initialize minimum date
     if (assignedDateInput.value) {
         expectedReturnDateInput.min = assignedDateInput.value;

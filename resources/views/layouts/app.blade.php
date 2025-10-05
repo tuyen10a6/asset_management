@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Quản lý tài sản - Livespo')</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+
     <style>
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
         }
         .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
+            color: #808184;
             padding: 0.75rem 1rem;
             margin: 0.25rem 0;
             border-radius: 0.5rem;
@@ -25,8 +25,8 @@
         }
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
-            color: white;
-            background-color: rgba(255,255,255,0.1);
+            color: #024ba1;
+            background-color: #ebedf3;
         }
         .main-content {
             background-color: #f8f9fa;
@@ -40,6 +40,7 @@
             font-weight: bold;
             color: #667eea !important;
         }
+
     </style>
 </head>
 <body>
@@ -49,12 +50,9 @@
             <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
-                        <h4 class="text-white">
-                            <i class="fas fa-boxes"></i>
-                            Livespo Assets
-                        </h4>
+                        <img style="width: 50%" src="{{url('/images/logo/logo.png')}}" alt="logo"/>
                     </div>
-                    
+
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
@@ -162,7 +160,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- User Dropdown -->
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -218,7 +216,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Notification Bell Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -226,20 +224,20 @@
             const notificationList = document.getElementById('notification-list');
             const notificationCount = document.getElementById('notification-count');
             const markAllReadBtn = document.getElementById('mark-all-read');
-            
+
             // Load unread count on page load
             loadUnreadCount();
-            
+
             // Load notifications when dropdown is opened
             notificationDropdown.addEventListener('click', function() {
                 loadRecentNotifications();
             });
-            
+
             // Also load when dropdown is shown via Bootstrap event
             document.getElementById('notificationDropdown').addEventListener('shown.bs.dropdown', function () {
                 loadRecentNotifications();
             });
-            
+
             // Mark all as read
             markAllReadBtn.addEventListener('click', function() {
                 fetch('{{ route("notifications.read-all") }}', {
@@ -258,7 +256,7 @@
                 })
                 .catch(error => console.error('Error:', error));
             });
-            
+
             function loadUnreadCount() {
                 fetch('{{ route("notifications.unread-count") }}')
                     .then(response => response.json())
@@ -272,7 +270,7 @@
                         updateNotificationCount(count);
                     });
             }
-            
+
             function loadRecentNotifications() {
                 notificationList.innerHTML = `
                     <div class="text-center p-3">
@@ -282,7 +280,7 @@
                         <span class="ms-2">Đang tải...</span>
                     </div>
                 `;
-                
+
                 fetch('{{ route("notifications.recent") }}')
                     .then(response => response.json())
                     .then(notifications => {
@@ -299,7 +297,7 @@
                         `;
                     });
             }
-            
+
             function renderNotifications(notifications) {
                 if (notifications.length === 0) {
                     notificationList.innerHTML = `
@@ -310,13 +308,13 @@
                     `;
                     return;
                 }
-                
+
                 let html = '';
                 notifications.forEach(notification => {
                     const iconClass = getNotificationIcon(notification.type);
                     const bgClass = notification.is_read ? '' : 'bg-light';
                     const timeAgo = formatTimeAgo(notification.created_at);
-                    
+
                     html += `
                         <div class="dropdown-item-text ${bgClass} p-3 border-bottom notification-item" data-id="${notification.id}">
                             <div class="d-flex">
@@ -333,9 +331,9 @@
                         </div>
                     `;
                 });
-                
+
                 notificationList.innerHTML = html;
-                
+
                 // Add click handlers for individual notifications
                 document.querySelectorAll('.notification-item').forEach(item => {
                     item.addEventListener('click', function() {
@@ -344,7 +342,7 @@
                     });
                 });
             }
-            
+
             function getNotificationIcon(type) {
                 switch(type) {
                     case 'warning': return 'fas fa-exclamation-triangle';
@@ -355,7 +353,7 @@
                     default: return 'fas fa-bell';
                 }
             }
-            
+
             function updateNotificationCount(count) {
                 if (count > 0) {
                     notificationCount.textContent = count > 99 ? '99+' : count;
@@ -364,7 +362,7 @@
                     notificationCount.style.display = 'none';
                 }
             }
-            
+
             function markNotificationAsRead(notificationId) {
                 fetch(`{{ url('/notifications') }}/${notificationId}/read`, {
                     method: 'POST',
@@ -390,12 +388,12 @@
                 })
                 .catch(error => console.error('Error marking notification as read:', error));
             }
-            
+
             function formatTimeAgo(dateString) {
                 const date = new Date(dateString);
                 const now = new Date();
                 const diffInSeconds = Math.floor((now - date) / 1000);
-                
+
                 if (diffInSeconds < 60) {
                     return 'Vừa xong';
                 } else if (diffInSeconds < 3600) {
@@ -411,12 +409,12 @@
                     return date.toLocaleDateString('vi-VN');
                 }
             }
-            
+
             // Refresh notification count every 30 seconds
             setInterval(loadUnreadCount, 30000);
         });
     </script>
-    
+
     @yield('scripts')
     @stack('scripts')
 </body>

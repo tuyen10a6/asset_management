@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'url_link_qr' => env('APP_URL_IMAGE_QR', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +40,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -101,7 +102,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string)env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 

@@ -15,6 +15,7 @@ class Asset extends Model
         'category_id',
         'brand',
         'model',
+        'filename',
         'serial_number',
         'purchase_date',
         'purchase_price',

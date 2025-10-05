@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Http\Request;
 use App\Models\Asset;
 use App\Models\AssetCategory;
@@ -14,13 +21,13 @@ class AssetController extends Controller
     public function index(Request $request)
     {
         $query = Asset::with(['category']);
-        
+
         if ($request->has('search')) {
             $search = $request->get('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('asset_code', 'like', "%{$search}%")
-                  ->orWhere('asset_name', 'like', "%{$search}%")
-                  ->orWhere('serial_number', 'like', "%{$search}%");
+                    ->orWhere('asset_name', 'like', "%{$search}%")
+                    ->orWhere('serial_number', 'like', "%{$search}%");
             });
         }
 
@@ -56,9 +63,15 @@ class AssetController extends Controller
         ]);
 
         $data = $request->all();
-        $data['qr_code'] = 'QR_' . $data['asset_code'] . '_' . time();
 
-        $asset = Asset::create($data);
+        $data['qr_code'] = 'https://qlts.livespo.vn/' . $data['asset_code'];
+
+
+        $fileName = $this->__generateQrcode($data['asset_code'], $data['qr_code']);
+
+        $data['filename'] = $fileName;
+
+        $asset = Asset::query()->create($data);
 
         // Log history
         AssetHistory::create([
@@ -72,6 +85,30 @@ class AssetController extends Controller
         return redirect()->route('assets.index')->with('success', 'Tài sản đã được tạo thành công!');
     }
 
+    private function __generateQrcode( $serialCode, $qrcodeContent): string
+    {
+        $qrCode = \Endroid\QrCode\QrCode::create($qrcodeContent)
+            ->setEncoding(new Encoding('UTF-8'))
+            ->setErrorCorrectionLevel(ErrorCorrectionLevel::Low)
+            ->setSize(300)
+            ->setMargin(10)
+            ->setRoundBlockSizeMode(RoundBlockSizeMode::Margin)
+            ->setForegroundColor(new Color(0, 0, 0))
+            ->setBackgroundColor(new Color(255, 255, 255));
+
+        $logo = Logo::create(public_path('statics/images/logo_qrcode.png'))
+            ->setResizeToWidth(50)
+            ->setPunchoutBackground(true);
+
+        $writer = new PngWriter();
+        $filename = $serialCode . '.png';
+
+        $outputQrCode = public_path('statics/images/qrcode/' . $filename);
+        $result = $writer->write($qrCode, $logo);
+        $result->saveToFile($outputQrCode);
+
+        return $filename;
+    }
     public function show(Asset $asset)
     {
         $asset->load(['category', 'assignments.employee', 'histories.performedBy', 'incidentReports']);
@@ -126,11 +163,11 @@ class AssetController extends Controller
     {
         // Generate QR code with the required URL format
         $qrUrl = 'https://qlts.livespo.vn/' . strtolower($asset->asset_code);
-        
+
         $qrCode = QrCode::size(300)
             ->format('svg')
             ->generate($qrUrl);
-            
+
         return view('assets.qr', compact('asset', 'qrCode'));
     }
 
@@ -139,7 +176,9 @@ class AssetController extends Controller
         $asset = Asset::where('asset_code', $asset_code)
             ->with(['category', 'currentAssignment.employee.department'])
             ->firstOrFail();
-            
+
         return view('assets.qr-info', compact('asset'));
     }
+
+
 }

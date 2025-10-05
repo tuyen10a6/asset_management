@@ -20,7 +20,7 @@
             overflow: hidden;
         }
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             color: white;
             padding: 2rem;
             text-align: center;
@@ -58,9 +58,7 @@
             <div class="col-md-6 col-lg-4">
                 <div class="login-card">
                     <div class="login-header">
-                        <i class="fas fa-boxes fa-3x mb-3"></i>
-                        <h3>Livespo Assets</h3>
-                        <p class="mb-0">Hệ thống quản lý tài sản</p>
+                        <img style="width: 50%" src="{{url('/images/logo/logo.png')}}" alt="logo"/>
                     </div>
                     <div class="login-body">
                         <form method="POST" action="/">
@@ -69,12 +67,12 @@
                                 <label for="username" class="form-label">
                                     <i class="fas fa-user me-2"></i>Tên đăng nhập
                                 </label>
-                                <input type="text" 
-                                       class="form-control @error('username') is-invalid @enderror" 
-                                       id="username" 
-                                       name="username" 
-                                       value="{{ old('username') }}" 
-                                       required 
+                                <input type="text"
+                                       class="form-control @error('username') is-invalid @enderror"
+                                       id="username"
+                                       name="username"
+                                       value="{{ old('username') }}"
+                                       required
                                        autofocus>
                                 @error('username')
                                     <div class="invalid-feedback">
@@ -87,10 +85,10 @@
                                 <label for="password" class="form-label">
                                     <i class="fas fa-lock me-2"></i>Mật khẩu
                                 </label>
-                                <input type="password" 
-                                       class="form-control @error('password') is-invalid @enderror" 
-                                       id="password" 
-                                       name="password" 
+                                <input type="password"
+                                       class="form-control @error('password') is-invalid @enderror"
+                                       id="password"
+                                       name="password"
                                        required>
                                 @error('password')
                                     <div class="invalid-feedback">

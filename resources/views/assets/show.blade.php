@@ -228,7 +228,7 @@
             </div>
             <div class="card-body text-center">
                 <div class="mb-3">
-                    {!! QrCode::size(200)->generate(route('assets.show', $asset)) !!}
+                    <img src="{{config('app.url_link_qr')}}/{{$asset->filename}}" alt="qrcode">
                 </div>
                 <p class="text-muted">{{ $asset->qr_code }}</p>
                 <a href="{{ route('assets.qr', $asset) }}" class="btn btn-primary btn-sm">
@@ -257,19 +257,19 @@
                         <i class="fas fa-undo me-2"></i>Thu hồi tài sản
                     </button>
                     @endif
-                    
+
                     <a href="{{ route('incidents.create', ['asset_id' => $asset->id]) }}" class="btn btn-info">
                         <i class="fas fa-exclamation-triangle me-2"></i>Báo cáo sự cố
                     </a>
-                    
+
                     <a href="{{ route('assets.edit', $asset) }}" class="btn btn-warning">
                         <i class="fas fa-edit me-2"></i>Chỉnh sửa
                     </a>
                 </div>
                 @endif
-                
+
                 <hr>
-                
+
                 <div class="d-grid">
                     <a href="{{ route('assets.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
