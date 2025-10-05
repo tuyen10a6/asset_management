@@ -17,10 +17,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-4">
-                            {!! $qrCode !!}
+                            <img src="{{config('app.url_link_qr')}}/{{$asset->filename}}" alt="qrcode">
                         </div>
                         <p class="text-muted">Mã QR: {{ $asset->qr_code }}</p>
-                        
+
                         <div class="btn-group" role="group">
                             <button onclick="printQR()" class="btn btn-primary">
                                 <i class="fas fa-print me-2"></i>In QR Code
@@ -30,7 +30,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="card bg-light">
                             <div class="card-body">
@@ -80,7 +80,7 @@
                                 </table>
                             </div>
                         </div>
-                        
+
                         <div class="mt-3">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
@@ -92,9 +92,9 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <hr>
-                
+
                 <div class="row">
                     <div class="col-12">
                         <a href="{{ route('assets.show', $asset) }}" class="btn btn-secondary me-2">
@@ -129,7 +129,7 @@
 function printQR() {
     var printContent = document.getElementById('printTemplate').innerHTML;
     var originalContent = document.body.innerHTML;
-    
+
     document.body.innerHTML = printContent;
     window.print();
     document.body.innerHTML = originalContent;
@@ -142,7 +142,7 @@ function downloadQR() {
     var svgData = new XMLSerializer().serializeToString(svg);
     var svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
     var svgUrl = URL.createObjectURL(svgBlob);
-    
+
     var downloadLink = document.createElement("a");
     downloadLink.href = svgUrl;
     downloadLink.download = "{{ $asset->asset_code }}_qrcode.svg";
