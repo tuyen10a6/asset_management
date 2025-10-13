@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
 @section('title', 'Quét QR Code - Livespo Asset Management')
 @section('page-title', 'Quét QR Code')
@@ -156,10 +156,22 @@ function onScanFailure(error) {
 }
 
 function processScannedCode(code) {
-    // Check if it's a URL (from our QR codes)
-    if (code.includes('/assets/')) {
-        // Extract asset ID from URL and redirect
-        window.location.href = code;
+    console.log('Processing scanned code:', code);
+    
+    // Check if it's a URL from our QR codes (https://qlts.livespo.vn/ASSET_CODE)
+    if (code.includes('qlts.livespo.vn/')) {
+        // Extract asset code from URL
+        const urlParts = code.split('/');
+        const assetCode = urlParts[urlParts.length - 1];
+        
+        // Redirect to our QR info page
+        window.location.href = `/qr/${assetCode}`;
+        return;
+    }
+    
+    // Check if it's a direct asset code
+    if (code.match(/^[A-Z0-9]+$/)) {
+        window.location.href = `/qr/${code}`;
         return;
     }
     
@@ -168,25 +180,18 @@ function processScannedCode(code) {
 }
 
 function searchAsset(searchTerm) {
-    // This would normally be an AJAX call to search for the asset
-    // For demo purposes, we'll simulate a search
+    // Check if it's a URL from qlts.livespo.vn
+    if (searchTerm.includes('qlts.livespo.vn')) {
+        const urlParts = searchTerm.split('/');
+        const assetCode = urlParts[urlParts.length - 1];
+        if (assetCode) {
+            window.location.href = `/qr/${assetCode}`;
+            return;
+        }
+    }
     
-    fetch(`/assets?search=${encodeURIComponent(searchTerm)}`)
-        .then(response => response.text())
-        .then(html => {
-            // Parse the response to check if asset was found
-            // This is a simplified implementation
-            if (html.includes('Không tìm thấy tài sản nào')) {
-                showError('Không tìm thấy tài sản với mã: ' + searchTerm);
-            } else {
-                // For demo, redirect to assets list with search
-                window.location.href = `/assets?search=${encodeURIComponent(searchTerm)}`;
-            }
-        })
-        .catch(error => {
-            console.error('Search error:', error);
-            showError('Có lỗi xảy ra khi tìm kiếm tài sản.');
-        });
+    // Direct search by asset code
+    window.location.href = `/qr/${encodeURIComponent(searchTerm)}`;
 }
 
 function showError(message) {

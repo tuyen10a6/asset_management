@@ -174,7 +174,16 @@ class AssetController extends Controller
     public function showAssetByQR($asset_code)
     {
         $asset = Asset::where('asset_code', $asset_code)
-            ->with(['category', 'currentAssignment.employee.department'])
+            ->with([
+                'category', 
+                'currentAssignment.employee.department',
+                'histories' => function($query) {
+                    $query->with('performedBy')->orderBy('action_date', 'desc')->limit(5);
+                },
+                'incidentReports' => function($query) {
+                    $query->orderBy('created_at', 'desc')->limit(3);
+                }
+            ])
             ->firstOrFail();
 
         return view('assets.qr-info', compact('asset'));

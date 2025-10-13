@@ -92,6 +92,32 @@
             color: #667eea;
             font-weight: bold;
         }
+        
+        .badge {
+            font-size: 0.8rem;
+        }
+        
+        .history-item, .incident-item {
+            transition: background-color 0.2s;
+        }
+        
+        .history-item:hover, .incident-item:hover {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        .text-success { color: #28a745 !important; }
+        .text-warning { color: #ffc107 !important; }
+        .text-danger { color: #dc3545 !important; }
+        .text-info { color: #17a2b8 !important; }
+        .text-secondary { color: #6c757d !important; }
+        
+        .bg-success { background-color: #28a745 !important; }
+        .bg-warning { background-color: #ffc107 !important; }
+        .bg-danger { background-color: #dc3545 !important; }
+        .bg-info { background-color: #17a2b8 !important; }
+        .bg-secondary { background-color: #6c757d !important; }
     </style>
 </head>
 <body>
@@ -171,6 +197,43 @@
                             </div>
                             <div class="info-value">{{ $asset->location ?? 'N/A' }}</div>
                         </div>
+
+                        @if($asset->condition_status)
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-clipboard-check"></i>
+                                Tình trạng
+                            </div>
+                            <div class="info-value">
+                                @switch($asset->condition_status)
+                                    @case('excellent')
+                                        <span class="badge bg-success">Tốt</span>
+                                        @break
+                                    @case('good')
+                                        <span class="badge bg-info">Khá</span>
+                                        @break
+                                    @case('fair')
+                                        <span class="badge bg-warning">Trung bình</span>
+                                        @break
+                                    @case('poor')
+                                        <span class="badge bg-danger">Kém</span>
+                                        @break
+                                    @default
+                                        <span class="badge bg-secondary">{{ $asset->condition_status }}</span>
+                                @endswitch
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($asset->purchase_price)
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Giá mua
+                            </div>
+                            <div class="info-value">{{ number_format($asset->purchase_price, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        @endif
                         
                         @if($asset->purchase_date)
                         <div class="info-item">
@@ -224,10 +287,111 @@
                                 </div>
                                 @endif
                             </div>
+                            @if($asset->currentAssignment->assignment_notes)
+                            <div class="mt-2">
+                                <strong>Ghi chú:</strong><br>
+                                <small class="text-muted">{{ $asset->currentAssignment->assignment_notes }}</small>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
+
+                        <!-- Recent History -->
+                        @if($asset->histories && $asset->histories->count() > 0)
+                        <div class="assignment-info">
+                            <h6 class="mb-3"><i class="fas fa-history me-2"></i>Lịch sử gần đây</h6>
+                            @foreach($asset->histories->take(3) as $history)
+                            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 history-item" style="border-bottom: 1px solid #eee;">
+                                <div>
+                                    <strong>
+                                        @switch($history->action_type)
+                                            @case('created')
+                                                <i class="fas fa-plus-circle text-success me-1"></i>Tạo mới
+                                                @break
+                                            @case('updated')
+                                                <i class="fas fa-edit text-warning me-1"></i>Cập nhật
+                                                @break
+                                            @case('assigned')
+                                                <i class="fas fa-user-plus text-info me-1"></i>Cấp phát
+                                                @break
+                                            @case('returned')
+                                                <i class="fas fa-user-minus text-secondary me-1"></i>Thu hồi
+                                                @break
+                                            @default
+                                                <i class="fas fa-circle text-muted me-1"></i>{{ ucfirst($history->action_type) }}
+                                        @endswitch
+                                    </strong>
+                                    @if($history->notes)
+                                        <br><small class="text-muted">{{ $history->notes }}</small>
+                                    @endif
+                                </div>
+                                <small class="text-muted">{{ $history->action_date->format('d/m/Y H:i') }}</small>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        <!-- Recent Incidents -->
+                        @if($asset->incidentReports && $asset->incidentReports->count() > 0)
+                        <div class="assignment-info">
+                            <h6 class="mb-3"><i class="fas fa-exclamation-triangle me-2"></i>Sự cố gần đây</h6>
+                            @foreach($asset->incidentReports->take(2) as $incident)
+                            <div class="d-flex justify-content-between align-items-start mb-2 pb-2 incident-item" style="border-bottom: 1px solid #eee;">
+                                <div class="flex-grow-1">
+                                    <strong>
+                                        @switch($incident->incident_type)
+                                            @case('damage')
+                                                <i class="fas fa-tools text-danger me-1"></i>Hư hỏng
+                                                @break
+                                            @case('maintenance')
+                                                <i class="fas fa-wrench text-warning me-1"></i>Bảo trì
+                                                @break
+                                            @case('lost')
+                                                <i class="fas fa-search text-danger me-1"></i>Mất tích
+                                                @break
+                                            @default
+                                                <i class="fas fa-exclamation-circle text-warning me-1"></i>{{ ucfirst($incident->incident_type) }}
+                                        @endswitch
+                                    </strong>
+                                    <span class="badge badge-sm ms-2 
+                                        @if($incident->status == 'resolved') bg-success
+                                        @elseif($incident->status == 'in_progress') bg-warning
+                                        @else bg-danger @endif">
+                                        {{ ucfirst($incident->status) }}
+                                    </span>
+                                    @if($incident->description)
+                                        <br><small class="text-muted">{{ Str::limit($incident->description, 60) }}</small>
+                                    @endif
+                                </div>
+                                <small class="text-muted">{{ $incident->incident_date->format('d/m/Y') }}</small>
+                            </div>
+                            @endforeach
                         </div>
                         @endif
                     </div>
                     
+                    <!-- Action Buttons -->
+                    <div class="text-center py-3" style="border-top: 1px solid #eee;">
+                        <div class="row">
+                            <div class="col-6">
+                                <button onclick="window.history.back()" class="btn btn-outline-secondary btn-sm w-100">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <a href="tel:+84123456789" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fas fa-phone me-2"></i>Hỗ trợ
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Cập nhật lần cuối: {{ $asset->updated_at->format('d/m/Y H:i') }}
+                            </small>
+                        </div>
+                    </div>
+
                     <!-- Livespo Logo -->
                     <div class="livespo-logo">
                         <h5><i class="fas fa-boxes me-2"></i>LIVESPO ASSET MANAGEMENT</h5>

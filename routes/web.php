@@ -23,6 +23,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // QR Code public access (for scanning)
 Route::get('/qr/{asset_code}', [AssetController::class, 'showAssetByQR'])->name('qr.asset');
+Route::get('/scan', function() {
+    return view('qr.scan');
+})->name('qr.scan.public');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {

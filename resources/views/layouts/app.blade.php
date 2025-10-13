@@ -84,7 +84,7 @@
                                 Quét QR Code
                             </a>
                         </li>
-                        @if(auth()->user()->canManageAssets())
+                        @if(auth()->check() && auth()->user()->canManageAssets())
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}" href="{{ route('employees.index') }}">
                                 <i class="fas fa-users me-2"></i>
@@ -104,7 +104,7 @@
                             </a>
                         </li>
                         @endif
-                        @if(auth()->user()->isAdmin())
+                        @if(auth()->check() && auth()->user()->isAdmin())
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
                                 <i class="fas fa-user-cog me-2"></i>
@@ -266,7 +266,7 @@
                     .catch(error => {
                         console.error('Error loading unread count:', error);
                         // Fallback to server-side count
-                        const count = {{ auth()->user()->unreadNotifications->count() ?? 0 }};
+                        const count = {{ auth()->check() ? auth()->user()->unreadNotifications->count() : 0 }};
                         updateNotificationCount(count);
                     });
             }
