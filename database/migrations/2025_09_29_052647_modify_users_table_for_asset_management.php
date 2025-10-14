@@ -12,27 +12,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // For SQLite compatibility, we'll recreate the table
+        // For SQLite, we need to recreate the table
         Schema::dropIfExists('users_backup');
-        
-        // Create backup table with old structure
+
+        // Create backup table
         Schema::create('users_backup', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
-        
+
         // Copy existing data to backup
-        DB::statement('INSERT INTO users_backup SELECT * FROM users');
-        
-        // Drop original table
+        DB::table('users_backup')->insert(
+            DB::table('users')->select(['id', 'password', 'remember_token', 'created_at', 'updated_at'])->get()->toArray()
+        );
+
+        // Drop and recreate users table
         Schema::dropIfExists('users');
-        
-        // Create new users table with desired structure
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username', 50)->unique();
@@ -43,12 +40,17 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            
+
             $table->index('username');
             $table->index('role');
             $table->index('is_active');
         });
-        
+
+        // Restore data from backup
+        DB::table('users')->insert(
+            DB::table('users_backup')->select(['id', 'password', 'remember_token', 'created_at', 'updated_at'])->get()->toArray()
+        );
+
         // Drop backup table
         Schema::dropIfExists('users_backup');
     }
