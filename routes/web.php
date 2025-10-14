@@ -15,7 +15,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
 
 // Authentication routes
-Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/', [AuthController::class, 'showLogin'])->name('login.not.route');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -26,11 +26,9 @@ Route::get('/{asset_code}', [AssetController::class, 'showAssetByQR'])->name('qr
 Route::get('/scan', function() {
     return view('qr.scan');
 })->name('qr.scan.public');
-
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     // Asset management
     Route::resource('assets', AssetController::class);
 
