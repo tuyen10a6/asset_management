@@ -115,7 +115,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Pagination -->
             <div class="d-flex justify-content-center">
                 {{ $assignments->appends(request()->query())->links() }}

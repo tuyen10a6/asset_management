@@ -15,7 +15,7 @@ class AssignmentController extends Controller
     public function index(Request $request)
     {
         $query = AssetAssignment::with(['asset.category', 'employee.department', 'assignedBy']);
-        
+
         // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
@@ -27,21 +27,21 @@ class AssignmentController extends Controller
                   ->orWhere('full_name', 'like', "%{$search}%");
             });
         }
-        
+
         // Filter by status
         if ($request->has('status') && $request->status) {
             $query->where('status', $request->status);
         }
-        
+
         // Filter by department
         if ($request->has('department_id') && $request->department_id) {
             $query->whereHas('employee', function($q) use ($request) {
                 $q->where('department_id', $request->department_id);
             });
         }
-        
+
         $assignments = $query->orderBy('assigned_date', 'desc')->paginate(15);
-        
+
         return view('assignments.index', compact('assignments'));
     }
 
@@ -49,10 +49,10 @@ class AssignmentController extends Controller
     {
         $availableAssets = Asset::where('status', 'available')->with('category')->get();
         $employees = Employee::where('status', 'active')->with('department')->get();
-        
+
         // Pre-select asset if asset_id is provided
         $selectedAssetId = $request->get('asset_id');
-        
+
         return view('assignments.create', compact('availableAssets', 'employees', 'selectedAssetId'));
     }
 
@@ -137,7 +137,7 @@ class AssignmentController extends Controller
         ]);
 
         $oldEmployeeId = $assignment->employee_id;
-        
+
         $assignment->update([
             'employee_id' => $request->employee_id,
             'expected_return_date' => $request->expected_return_date,
